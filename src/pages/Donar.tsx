@@ -1,6 +1,7 @@
 import { useState } from "react";
 import NavBar from "@/components/NavBar";
 import FooterSection from "@/components/FooterSection";
+import { toast } from "@/components/ui/sonner";
 
 const suggestedAmounts = [50, 100, 250, 500];
 
@@ -27,9 +28,11 @@ export default function Donar() {
         return;
       }
 
-      window.location.href = "/gracias-donativo";
+      throw new Error("Checkout unavailable");
     } catch {
-      window.location.href = "/gracias-donativo";
+      toast.error("El checkout aún no está configurado en el backend.", {
+        description: "Puedo dejarlo conectado al proveedor de pagos en el siguiente paso guiado.",
+      });
     } finally {
       setIsLoading(false);
     }
