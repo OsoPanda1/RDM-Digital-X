@@ -57,6 +57,30 @@ interface ChatMessageDTO {
   text: string;
 }
 
+async function requestRealitoCloud(message: string, contextHistory: ChatMessageDTO[]) {
+  const cloudUrl = import.meta.env.VITE_SUPABASE_URL;
+  const publishableKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+
+  if (!cloudUrl || !publishableKey) {
+    throw new Error("Cloud AI unavailable");
+  }
+
+  const response = await fetch(`${cloudUrl}/functions/v1/realito-chat`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${publishableKey}`,
+    },
+    body: JSON.stringify({ message, contextHistory }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Cloud AI error ${response.status}`);
+  }
+
+  return response.json() as Promise<RealitoChatResponse>;
+}
+
 export function useRealitoChat() {
   const [messages, setMessages] = useState<RealitoMessage[]>([
     {
@@ -101,11 +125,17 @@ export function useRealitoChat() {
           text: m.content,
         }));
 
-        const payload = await apiPost<RealitoChatResponse>("/api/realito/chat", {
-          message: text,
-          contextHistory,
-          userPreferences: {},
-        });
+        let payload: RealitoChatResponse;
+
+        try {
+          payload = await apiPost<RealitoChatResponse>("/api/realito/chat", {
+            message: text,
+            contextHistory,
+            userPreferences: {},
+          });
+        } catch {
+          payload = await requestRealitoCloud(text, contextHistory);
+        }
 
         if (payload.trace?.interactionId) {
           setLastTraceId(payload.trace.interactionId);

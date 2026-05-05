@@ -92,9 +92,25 @@ const MapSection = () => {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
   const [activeFilter, setActiveFilter] = useState<string | null>(null);
+  const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
 
   const { data: twinsResponse } = useApi<TwinsResponse>("/api/experience/twins");
   const twins = twinsResponse?.twins ?? fallbackTwins;
+
+  useEffect(() => {
+    if (!("geolocation" in navigator)) return;
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setUserLocation({
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        });
+      },
+      () => undefined,
+      { enableHighAccuracy: true, timeout: 8000, maximumAge: 120000 },
+    );
+  }, []);
 
   // Stats from telemetry
   const avgCrowd = twins.length > 0
@@ -126,6 +142,18 @@ const MapSection = () => {
     }).addTo(map);
 
     L.control.zoom({ position: "bottomright" }).addTo(map);
+
+    if (userLocation) {
+      L.circleMarker([userLocation.lat, userLocation.lng], {
+        radius: 8,
+        color: "#ffffff",
+        weight: 2,
+        fillColor: "#3b82f6",
+        fillOpacity: 0.95,
+      })
+        .addTo(map)
+        .bindPopup("Tu ubicación aproximada", { className: "rdm-popup", closeButton: false });
+    }
 
     // Render twins as markers with telemetry data
     twins.forEach((twin) => {
@@ -187,7 +215,7 @@ const MapSection = () => {
         mapInstanceRef.current = null;
       }
     };
-  }, [twins, activeFilter]);
+  }, [twins, activeFilter, userLocation]);
 
   const filterOptions = [
     { key: null, label: "Todos" },
@@ -290,6 +318,9 @@ const MapSection = () => {
           </span>
           <span>
             Altitud: <span className="text-foreground">2,700m</span>
+          </span>
+          <span>
+            Ubicación: <span className="text-foreground">{userLocation ? "activa" : "no disponible"}</span>
           </span>
         </motion.div>
       </div>
