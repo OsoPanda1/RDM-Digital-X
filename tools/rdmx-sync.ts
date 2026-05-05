@@ -22,6 +22,9 @@ const MODULES: ModuleRef[] = [
   { id: "genesis-digytamv-nexus", repo: "https://github.com/OsoPanda1/genesis-digytamv-nexus.git", path: "packages/genesis-digytamv-nexus" },
   { id: "civilizational-core", repo: "https://github.com/OsoPanda1/civilizational-core.git", path: "packages/civilizational-core" },
   { id: "quantum-system-tamv", repo: "https://github.com/OsoPanda1/quantum-system-tamv.git", path: "packages/quantum-system-tamv" },
+  { id: "rdm-digital-nodo-cero", repo: "https://github.com/OsoPanda1/rdm-digital-nodo-cero.git", path: "packages/rdm-digital-nodo-cero" },
+  { id: "real-del-monte-explorer-11b3982a", repo: "https://github.com/OsoPanda1/real-del-monte-explorer-11b3982a.git", path: "packages/real-del-monte-explorer-11b3982a" },
+  { id: "rdm-digital-2026", repo: "https://github.com/OsoPanda1/RDM-DIGITAL2026.git", path: "packages/rdm-digital-2026" },
 ];
 
 function run(cmd: string, cwd?: string): string {
