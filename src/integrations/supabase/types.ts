@@ -14,16 +14,200 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      merchant_categories: {
+        Row: {
+          active: boolean
+          created_at: string
+          description: string | null
+          fee_mxn: number
+          id: string
+          name: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          description?: string | null
+          fee_mxn: number
+          id: string
+          name: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          description?: string | null
+          fee_mxn?: number
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
+      merchant_payments: {
+        Row: {
+          amount_mxn: number
+          created_at: string
+          currency: string
+          id: string
+          merchant_id: string
+          owner_id: string
+          provider: string
+          provider_payment_id: string | null
+          provider_session_id: string | null
+          status: Database["public"]["Enums"]["payment_status"]
+          updated_at: string
+          webhook_payload: Json | null
+        }
+        Insert: {
+          amount_mxn: number
+          created_at?: string
+          currency?: string
+          id?: string
+          merchant_id: string
+          owner_id: string
+          provider?: string
+          provider_payment_id?: string | null
+          provider_session_id?: string | null
+          status?: Database["public"]["Enums"]["payment_status"]
+          updated_at?: string
+          webhook_payload?: Json | null
+        }
+        Update: {
+          amount_mxn?: number
+          created_at?: string
+          currency?: string
+          id?: string
+          merchant_id?: string
+          owner_id?: string
+          provider?: string
+          provider_payment_id?: string | null
+          provider_session_id?: string | null
+          status?: Database["public"]["Enums"]["payment_status"]
+          updated_at?: string
+          webhook_payload?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "merchant_payments_merchant_id_fkey"
+            columns: ["merchant_id"]
+            isOneToOne: false
+            referencedRelation: "merchant_registrations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      merchant_registrations: {
+        Row: {
+          address: string
+          category_id: string
+          created_at: string
+          description: string
+          id: string
+          latitude: number
+          longitude: number
+          main_image: string | null
+          name: string
+          owner_id: string
+          paid_at: string | null
+          phone: string | null
+          published_at: string | null
+          slug: string | null
+          status: Database["public"]["Enums"]["merchant_publication_status"]
+          tags: string[]
+          updated_at: string
+          website: string | null
+        }
+        Insert: {
+          address: string
+          category_id: string
+          created_at?: string
+          description: string
+          id?: string
+          latitude: number
+          longitude: number
+          main_image?: string | null
+          name: string
+          owner_id: string
+          paid_at?: string | null
+          phone?: string | null
+          published_at?: string | null
+          slug?: string | null
+          status?: Database["public"]["Enums"]["merchant_publication_status"]
+          tags?: string[]
+          updated_at?: string
+          website?: string | null
+        }
+        Update: {
+          address?: string
+          category_id?: string
+          created_at?: string
+          description?: string
+          id?: string
+          latitude?: number
+          longitude?: number
+          main_image?: string | null
+          name?: string
+          owner_id?: string
+          paid_at?: string | null
+          phone?: string | null
+          published_at?: string | null
+          slug?: string | null
+          status?: Database["public"]["Enums"]["merchant_publication_status"]
+          tags?: string[]
+          updated_at?: string
+          website?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "merchant_registrations_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "merchant_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "merchant" | "visitor"
+      merchant_publication_status:
+        | "draft"
+        | "awaiting_payment"
+        | "paid"
+        | "published"
+        | "rejected"
+      payment_status: "pending" | "succeeded" | "failed" | "refunded"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +334,16 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "merchant", "visitor"],
+      merchant_publication_status: [
+        "draft",
+        "awaiting_payment",
+        "paid",
+        "published",
+        "rejected",
+      ],
+      payment_status: ["pending", "succeeded", "failed", "refunded"],
+    },
   },
 } as const
