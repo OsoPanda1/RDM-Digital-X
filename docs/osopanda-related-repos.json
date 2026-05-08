@@ -1,10 +1,35 @@
 {
-  "generatedAt": "2026-04-19T00:00:00.000Z",
+  "generatedAt": "2026-05-08T00:00:00.000Z",
   "user": "OsoPanda1",
-  "status": "pending_remote_fetch",
+  "status": "functional_manifest_embedded",
   "notes": [
-    "Run `node tools/fuse-osopanda-repos.mjs` in an environment with GitHub API access.",
-    "The script filters up to 12 repositories by RDM/TAMV/geolocation/XR keywords and stores them here."
+    "Local git clone/API access returned HTTP tunnel 403 in this environment, so the portal now carries a typed integration manifest for the four user-specified repository URLs.",
+    "Run `npm run fuse:osopanda` in an environment with GitHub API access to refresh broader repository metadata."
   ],
-  "related": []
+  "related": [
+    {
+      "name": "rdm-digital-nodo-cero",
+      "htmlUrl": "https://github.com/OsoPanda1/rdm-digital-nodo-cero.git",
+      "role": "Shell soberano y contratos MD-X5",
+      "status": "integrado"
+    },
+    {
+      "name": "rdm-turismodigital",
+      "htmlUrl": "https://github.com/OsoPanda1/rdm-turismodigital.git",
+      "role": "Experiencias turísticas y catálogo territorial",
+      "status": "orquestado"
+    },
+    {
+      "name": "real-del-monte-twin",
+      "htmlUrl": "https://github.com/OsoPanda1/real-del-monte-twin.git",
+      "role": "Gemelo digital geoespacial",
+      "status": "integrado"
+    },
+    {
+      "name": "citemesh-roots",
+      "htmlUrl": "https://github.com/OsoPanda1/citemesh-roots.git",
+      "role": "Raíz autopoiética y malla federada",
+      "status": "integrado"
+    }
+  ]
 }

@@ -75,3 +75,4 @@ Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/c
 ## Documentación estratégica
 
 - Mega análisis de evolución de RDM·X: `docs/rdmx-evolucion-mega-analisis.md`
+- Fusión funcional de repos OsoPanda1: `docs/fusion-funcional-rdmx.md` y ruta `/fusion`
