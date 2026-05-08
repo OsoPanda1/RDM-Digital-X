@@ -32,6 +32,8 @@ const TAMVStatus = lazy(() => import("./pages/TAMVStatus"));
 const TAMVApiExplorer = lazy(() => import("./pages/TAMVApiExplorer"));
 const TAMVThesis = lazy(() => import("./pages/TAMVThesis"));
 const Tenochtitlan = lazy(() => import("./pages/Tenochtitlan"));
+const Operativo = lazy(() => import("./pages/Operativo"));
+const Evolucion = lazy(() => import("./pages/Evolucion"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
