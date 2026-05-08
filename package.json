@@ -13,7 +13,8 @@
     "test:watch": "vitest",
     "dev:api": "cd server && npm run dev",
     "build:api": "cd server && npm run build",
-    "fuse:osopanda": "node tools/fuse-osopanda-repos.mjs"
+    "fuse:osopanda": "node tools/fuse-osopanda-repos.mjs",
+    "roadmap:sync": "node tools/rdmx-roadmap.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
