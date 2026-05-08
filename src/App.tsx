@@ -78,6 +78,8 @@ const AnimatedRoutes = () => {
           <Route path="/tamv/api" element={<TAMVApiExplorer />} />
           <Route path="/tamv/thesis" element={<TAMVThesis />} />
           <Route path="/tenochtitlan" element={<Tenochtitlan />} />
+          <Route path="/operativo" element={<Operativo />} />
+          <Route path="/evolucion" element={<Evolucion />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>
