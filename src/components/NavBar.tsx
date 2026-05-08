@@ -11,6 +11,7 @@ const navItems = [
   { label: "Comercios", path: "/catalogo" },
   { label: "Eventos", path: "/eventos" },
   { label: "TAMV", path: "/tamv" },
+  { label: "Fusión", path: "/fusion" },
   { label: "Tenochtitlán", path: "/tenochtitlan" },
 ];
 
@@ -29,6 +30,7 @@ const chapters = [
   { id: "comunidad", label: "Muro Global", preview: "Comunidad", path: "/comunidad" },
   { id: "nosotros", label: "Quiénes Somos", preview: "Equipo", path: "/quienes-somos" },
   { id: "tamv", label: "TAMV Civilization Hub", preview: "Nodo Cero", path: "/tamv" },
+  { id: "fusion", label: "Fusión RDM·X", preview: "4 repos", path: "/fusion" },
   { id: "tenochtitlan", label: "System Tenochtitlán", preview: "Kernel", path: "/tenochtitlan" },
   { id: "apoya", label: "Apoya RDM", preview: "Donaciones", path: "/donar" },
 ];

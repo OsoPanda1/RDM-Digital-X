@@ -27,6 +27,7 @@ const ComerciosPanel = lazy(() => import("./pages/ComerciosPanel"));
 const ComerciosRegistro = lazy(() => import("./pages/ComerciosRegistro"));
 const ComerciosCheckout = lazy(() => import("./pages/ComerciosCheckout"));
 const TAMVHub = lazy(() => import("./pages/TAMVHub"));
+const FusionEcosystem = lazy(() => import("./pages/FusionEcosystem"));
 const TAMVStatus = lazy(() => import("./pages/TAMVStatus"));
 const TAMVApiExplorer = lazy(() => import("./pages/TAMVApiExplorer"));
 const TAMVThesis = lazy(() => import("./pages/TAMVThesis"));
@@ -70,6 +71,7 @@ const AnimatedRoutes = () => {
           <Route path="/comercios/registro" element={<ComerciosRegistro />} />
           <Route path="/comercios/checkout" element={<ComerciosCheckout />} />
           <Route path="/tamv" element={<TAMVHub />} />
+          <Route path="/fusion" element={<FusionEcosystem />} />
           <Route path="/tamv/status" element={<TAMVStatus />} />
           <Route path="/tamv/api" element={<TAMVApiExplorer />} />
           <Route path="/tamv/thesis" element={<TAMVThesis />} />
