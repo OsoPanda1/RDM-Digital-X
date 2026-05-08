@@ -1,0 +1,327 @@
+{
+  "areas": [
+    {
+      "key": "data",
+      "title": "Base de datos y modelo de gemelos",
+      "priority": "P0",
+      "tasks": [
+        {
+          "id": "DATA-01",
+          "title": "Configurar DATABASE_URL y SHADOW_DATABASE_URL por entorno",
+          "status": "todo",
+          "estimate": "0.5d",
+          "owner": "backend"
+        },
+        {
+          "id": "DATA-02",
+          "title": "Completar schema Prisma y migraciones de dominio",
+          "status": "todo",
+          "estimate": "3d",
+          "owner": "backend"
+        },
+        {
+          "id": "DATA-03",
+          "title": "Scripts de seeding desde arrays actuales",
+          "status": "todo",
+          "estimate": "2d",
+          "owner": "backend"
+        },
+        {
+          "id": "DATA-04",
+          "title": "Reemplazar consumo en memoria por Prisma en servicios",
+          "status": "todo",
+          "estimate": "4.5d",
+          "owner": "backend"
+        }
+      ]
+    },
+    {
+      "key": "api-domain",
+      "title": "Capa de APIs REST / dominio",
+      "priority": "P0",
+      "tasks": [
+        {
+          "id": "API-01",
+          "title": "Completar endpoints GET de places/merchants/routes/events/legends/sayings/community",
+          "status": "todo",
+          "estimate": "3d",
+          "owner": "backend"
+        },
+        {
+          "id": "API-02",
+          "title": "Validación Zod en POST/PUT/PATCH + respuestas tipadas",
+          "status": "todo",
+          "estimate": "2.5d",
+          "owner": "backend"
+        },
+        {
+          "id": "API-03",
+          "title": "Esquema uniforme de errores HTTP",
+          "status": "todo",
+          "estimate": "2.5d",
+          "owner": "backend"
+        }
+      ]
+    },
+    {
+      "key": "ai-experience",
+      "title": "Realito AI y motor de experiencia",
+      "priority": "P1",
+      "tasks": [
+        {
+          "id": "AI-01",
+          "title": "Integrar handleRealitoChat + GA como ruta principal con fallback heurístico",
+          "status": "todo",
+          "estimate": "2d",
+          "owner": "backend"
+        },
+        {
+          "id": "AI-02",
+          "title": "Integrar gateway IA externo (/ai/realito)",
+          "status": "todo",
+          "estimate": "2.5d",
+          "owner": "backend"
+        },
+        {
+          "id": "AI-03",
+          "title": "Timeouts, reintentos y degradación controlada",
+          "status": "todo",
+          "estimate": "1.5d",
+          "owner": "backend"
+        },
+        {
+          "id": "AI-04",
+          "title": "Endpoint POST /api/experience/plan con optimizeRoute",
+          "status": "todo",
+          "estimate": "3d",
+          "owner": "backend"
+        }
+      ]
+    },
+    {
+      "key": "auth-roles",
+      "title": "Autenticación, roles y comercios",
+      "priority": "P1",
+      "tasks": [
+        {
+          "id": "AUTH-01",
+          "title": "Modelos User/Role/MerchantUser/sesión en Prisma",
+          "status": "todo",
+          "estimate": "2d",
+          "owner": "backend"
+        },
+        {
+          "id": "AUTH-02",
+          "title": "Integración de proveedor de identidad o JWT propio",
+          "status": "todo",
+          "estimate": "3d",
+          "owner": "backend"
+        },
+        {
+          "id": "AUTH-03",
+          "title": "Middleware de autorización por rol en rutas mutantes",
+          "status": "todo",
+          "estimate": "2d",
+          "owner": "backend"
+        }
+      ]
+    },
+    {
+      "key": "billing",
+      "title": "Billing y planes L1-L3",
+      "priority": "P2",
+      "tasks": [
+        {
+          "id": "BILL-01",
+          "title": "Crear planes L1-L3 en Stripe",
+          "status": "todo",
+          "estimate": "1d",
+          "owner": "backend"
+        },
+        {
+          "id": "BILL-02",
+          "title": "Endpoint checkout-session vinculado a Merchant",
+          "status": "todo",
+          "estimate": "2d",
+          "owner": "backend"
+        },
+        {
+          "id": "BILL-03",
+          "title": "Webhook de suscripciones + actualización de estado",
+          "status": "todo",
+          "estimate": "2d",
+          "owner": "backend"
+        },
+        {
+          "id": "BILL-04",
+          "title": "Conectar UI panel de comercios a estados de plan",
+          "status": "todo",
+          "estimate": "1d",
+          "owner": "frontend"
+        }
+      ]
+    },
+    {
+      "key": "frontend",
+      "title": "Frontend productivo",
+      "priority": "P1",
+      "tasks": [
+        {
+          "id": "FE-01",
+          "title": "Sustituir datos estáticos residuales por APIs reales",
+          "status": "todo",
+          "estimate": "3d",
+          "owner": "frontend"
+        },
+        {
+          "id": "FE-02",
+          "title": "Loading states y skeletons consistentes",
+          "status": "todo",
+          "estimate": "1.5d",
+          "owner": "frontend"
+        },
+        {
+          "id": "FE-03",
+          "title": "Manejo centralizado de errores de red",
+          "status": "todo",
+          "estimate": "1.5d",
+          "owner": "frontend"
+        },
+        {
+          "id": "FE-04",
+          "title": "Cierre de navegación lazy y chunks dinámicos",
+          "status": "todo",
+          "estimate": "1d",
+          "owner": "frontend"
+        }
+      ]
+    },
+    {
+      "key": "observability",
+      "title": "Observabilidad, logging y salud",
+      "priority": "P0",
+      "tasks": [
+        {
+          "id": "OBS-01",
+          "title": "Logging estructurado con requestId/userId/intent/routeId/aiLatencyMs",
+          "status": "todo",
+          "estimate": "2d",
+          "owner": "backend"
+        },
+        {
+          "id": "OBS-02",
+          "title": "Métricas por endpoint y uso de IA/GA",
+          "status": "todo",
+          "estimate": "2d",
+          "owner": "backend"
+        },
+        {
+          "id": "OBS-03",
+          "title": "Endpoints /api/health ampliado y /api/ready",
+          "status": "todo",
+          "estimate": "1d",
+          "owner": "backend"
+        }
+      ]
+    },
+    {
+      "key": "security",
+      "title": "Seguridad y hardening",
+      "priority": "P0",
+      "tasks": [
+        {
+          "id": "SEC-01",
+          "title": "CORS estricto por dominios finales",
+          "status": "todo",
+          "estimate": "0.5d",
+          "owner": "backend"
+        },
+        {
+          "id": "SEC-02",
+          "title": "Rate limiting en /api/realito/chat y /api/experience/plan",
+          "status": "todo",
+          "estimate": "1d",
+          "owner": "backend"
+        },
+        {
+          "id": "SEC-03",
+          "title": "Sanitización de inputs de texto libre",
+          "status": "todo",
+          "estimate": "1.5d",
+          "owner": "backend"
+        },
+        {
+          "id": "SEC-04",
+          "title": "Headers de seguridad frontend/backend",
+          "status": "todo",
+          "estimate": "2d",
+          "owner": "fullstack"
+        }
+      ]
+    },
+    {
+      "key": "cicd",
+      "title": "CI/CD, entornos y despliegue",
+      "priority": "P1",
+      "tasks": [
+        {
+          "id": "CICD-01",
+          "title": "Pipeline con lint + tests + builds en push a main",
+          "status": "todo",
+          "estimate": "2.5d",
+          "owner": "platform"
+        },
+        {
+          "id": "CICD-02",
+          "title": "prisma migrate deploy en staging",
+          "status": "todo",
+          "estimate": "1d",
+          "owner": "platform"
+        },
+        {
+          "id": "CICD-03",
+          "title": "Separación dev/staging/prod y recursos base",
+          "status": "todo",
+          "estimate": "2.5d",
+          "owner": "platform"
+        }
+      ]
+    },
+    {
+      "key": "telemetry",
+      "title": "Telemetría de experiencia y gemelos",
+      "priority": "P2",
+      "tasks": [
+        {
+          "id": "TEL-01",
+          "title": "Modelo Interaction/ExperienceSession conectado a User/PlannedRoute/DigitalTwin",
+          "status": "todo",
+          "estimate": "2d",
+          "owner": "backend"
+        },
+        {
+          "id": "TEL-02",
+          "title": "Registro de eventos clave de uso de rutas y paradas",
+          "status": "todo",
+          "estimate": "2d",
+          "owner": "backend"
+        },
+        {
+          "id": "TEL-03",
+          "title": "Jobs batch para popularityScore/immersionLevel/flowIndex",
+          "status": "todo",
+          "estimate": "2d",
+          "owner": "backend"
+        }
+      ]
+    }
+  ],
+  "generatedAt": "2026-05-08T14:41:02.260Z",
+  "summary": {
+    "total": 35,
+    "done": 0,
+    "inProgress": 0,
+    "todo": 35,
+    "completion": 0
+  }
+}
