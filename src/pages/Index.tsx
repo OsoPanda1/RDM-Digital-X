@@ -15,10 +15,12 @@ const Index = () => {
       <NodoCeroBanner />
       <SitesSection />
       <QuickLinksSection />
-      <div id="mapa">
+      <section id="mapa" aria-label="Mapa interactivo de Real del Monte">
         <MapSection />
-      </div>
-      <MerchantCatalog />
+      </section>
+      <section id="catalogo" aria-label="Catálogo de comercios locales">
+        <MerchantCatalog />
+      </section>
     </MainLayout>
   );
 };
