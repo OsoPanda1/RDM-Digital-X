@@ -36,6 +36,9 @@ jobs:
             fi
           done
 
+      - name: Roadmap sync (docs ↔ public/roadmap-rdmx.json)
+        run: npm run roadmap:sync
+
       - name: Frontend lint
         run: npm run lint
 
