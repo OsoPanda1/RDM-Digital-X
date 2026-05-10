@@ -2,6 +2,7 @@ import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 import { Link } from "react-router-dom";
 import { MapPin, Heart, Mail, Sparkles } from "lucide-react";
+import rdmLogo from "@/assets/rdm-digital-nexus-logo.png";
 
 const footerLinks = [
   { label: "Historia", path: "/historia" },
@@ -38,9 +39,9 @@ const FooterSection = () => {
           <div className="md:col-span-2">
             <motion.div initial={{ opacity: 0, y: 20 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 1 }}>
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-14 h-14 rounded-full flex items-center justify-center"
-                  style={{ background: "radial-gradient(circle, hsl(43, 80%, 55%), hsl(43, 60%, 35%))", filter: "drop-shadow(0 0 10px hsla(210,100%,55%,0.3))" }}>
-                  <span className="text-xl font-display font-bold" style={{ color: "hsl(220, 45%, 8%)" }}>R</span>
+                <div className="w-14 h-14 rounded-full overflow-hidden ring-1 ring-amber-300/40"
+                  style={{ filter: "drop-shadow(0 0 10px hsla(210,100%,55%,0.3))" }}>
+                  <img src={rdmLogo} alt="RDM Digital Nexus" className="w-full h-full object-cover" />
                 </div>
                 <div>
                   <span className="font-display text-xl font-bold text-foreground">RDM Digital</span>

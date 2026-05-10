@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link, useLocation } from "react-router-dom";
-import { Heart, Sparkles } from "lucide-react";
+import { Heart } from "lucide-react";
+import rdmLogo from "@/assets/rdm-digital-nexus-logo.png";
 
 const navItems = [
   { label: "Historia", path: "/historia" },
@@ -67,9 +68,8 @@ const NavBar = () => {
         >
           <div className="flex items-center justify-between gap-4">
             <Link to="/" className="group flex items-center gap-3">
-              <div className="relative h-10 w-10 rounded-xl border border-cyan-200/20 bg-slate-950/90">
-                <div className="absolute inset-[3px] rounded-lg bg-[radial-gradient(circle_at_30%_20%,hsl(193,100%,70%),hsl(220,72%,35%))]" />
-                <Sparkles className="absolute inset-0 m-auto h-4 w-4 text-white/90" />
+              <div className="relative h-11 w-11 overflow-hidden rounded-full ring-1 ring-amber-300/30 shadow-[0_0_18px_-4px_hsla(43,80%,55%,0.55)] transition-transform group-hover:scale-105">
+                <img src={rdmLogo} alt="Logo oficial RDM Digital Nexus" className="h-full w-full object-cover" />
               </div>
               <div>
                 <span className="block font-display text-lg leading-none text-white/95">RDM Digital Nexus</span>
