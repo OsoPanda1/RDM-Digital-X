@@ -88,29 +88,52 @@ const fallbackTwins: TwinNode[] = [
   { id: "twin-eco", modelType: "MERCHANT_TWIN", sourceId: "eco-aventuras", name: "Eco Aventuras RDM", lat: 20.1500, lng: -98.6820, tags: ["AVENTURA"], immersionLevel: 0.9, popularityScore: 0.7, telemetry: { crowdLevel: 0.15, openStatus: true }, properties: { type: "ACTIVITY", immersion: "L3" } },
 ];
 
+type GeoStatus = "idle" | "requesting" | "granted" | "denied" | "unsupported" | "error";
+
 const MapSection = () => {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
   const [activeFilter, setActiveFilter] = useState<string | null>(null);
-  const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const [userLocation, setUserLocation] = useState<{ lat: number; lng: number; accuracy?: number } | null>(null);
+  const [geoStatus, setGeoStatus] = useState<GeoStatus>("idle");
 
   const { data: twinsResponse } = useApi<TwinsResponse>("/api/experience/twins");
   const twins = twinsResponse?.twins ?? fallbackTwins;
 
-  useEffect(() => {
-    if (!("geolocation" in navigator)) return;
-
+  const requestLocation = () => {
+    if (!("geolocation" in navigator)) {
+      setGeoStatus("unsupported");
+      return;
+    }
+    setGeoStatus("requesting");
     navigator.geolocation.getCurrentPosition(
       (position) => {
         setUserLocation({
           lat: position.coords.latitude,
           lng: position.coords.longitude,
+          accuracy: position.coords.accuracy,
         });
+        setGeoStatus("granted");
       },
-      () => undefined,
-      { enableHighAccuracy: true, timeout: 8000, maximumAge: 120000 },
+      (err) => {
+        setGeoStatus(err.code === err.PERMISSION_DENIED ? "denied" : "error");
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 },
     );
+  };
+
+  useEffect(() => {
+    requestLocation();
   }, []);
+
+  const centerOnUser = () => {
+    if (userLocation && mapInstanceRef.current) {
+      mapInstanceRef.current.flyTo([userLocation.lat, userLocation.lng], 16, { duration: 1.2 });
+    } else {
+      requestLocation();
+    }
+  };
+
 
   // Stats from telemetry
   const avgCrowd = twins.length > 0
@@ -145,14 +168,28 @@ const MapSection = () => {
 
     if (userLocation) {
       L.circleMarker([userLocation.lat, userLocation.lng], {
-        radius: 8,
+        radius: 9,
         color: "#ffffff",
         weight: 2,
         fillColor: "#3b82f6",
         fillOpacity: 0.95,
       })
         .addTo(map)
-        .bindPopup("Tu ubicación aproximada", { className: "rdm-popup", closeButton: false });
+        .bindPopup(
+          `<div style="font-family:Inter,sans-serif;padding:6px 10px;font-size:12px;color:#0f172a;">
+            <strong>Tu ubicación</strong>${userLocation.accuracy ? `<br/><span style='font-size:10px;color:#64748b;'>±${Math.round(userLocation.accuracy)} m</span>` : ""}
+          </div>`,
+          { className: "rdm-popup", closeButton: false },
+        );
+      if (userLocation.accuracy && userLocation.accuracy < 500) {
+        L.circle([userLocation.lat, userLocation.lng], {
+          radius: userLocation.accuracy,
+          color: "#3b82f6",
+          weight: 1,
+          fillColor: "#3b82f6",
+          fillOpacity: 0.08,
+        }).addTo(map);
+      }
     }
 
     // Render twins as markers with telemetry data
@@ -202,6 +239,10 @@ const MapSection = () => {
             ${twin.telemetry.avgStayMinutes ? `<span style="font-size:10px;color:#64748b;font-family:'IBM Plex Mono',monospace;">~${twin.telemetry.avgStayMinutes} min</span>` : ""}
           </div>
           ${twin.telemetry.queueMinutes ? `<div style="font-size:10px;color:#64748b;margin-top:4px;">Espera: ~${twin.telemetry.queueMinutes} min</div>` : ""}
+          <div style="display:flex;gap:6px;margin-top:10px;">
+            <a href="https://www.google.com/maps/dir/?api=1&destination=${twin.lat},${twin.lng}" target="_blank" rel="noopener" style="flex:1;text-align:center;padding:6px 10px;border-radius:8px;background:#0f172a;color:#fff;font-size:11px;text-decoration:none;font-family:'IBM Plex Mono',monospace;letter-spacing:0.08em;text-transform:uppercase;">Cómo llegar</a>
+            <a href="https://www.google.com/maps/search/?api=1&query=${twin.lat},${twin.lng}" target="_blank" rel="noopener" style="padding:6px 10px;border-radius:8px;background:#e2e8f0;color:#0f172a;font-size:11px;text-decoration:none;font-family:'IBM Plex Mono',monospace;letter-spacing:0.08em;text-transform:uppercase;">Ver</a>
+          </div>
         </div>`;
 
       L.marker([twin.lat, twin.lng], { icon })
@@ -264,7 +305,21 @@ const MapSection = () => {
               {opt.label}
             </button>
           ))}
+          <button
+            onClick={centerOnUser}
+            className="ml-auto px-3 py-1.5 rounded-lg border border-primary/40 bg-primary/10 text-primary hover:bg-primary/20 transition-all"
+          >
+            {geoStatus === "requesting" ? "Localizando…" : userLocation ? "📍 Centrar en mí" : "📍 Activar ubicación"}
+          </button>
         </div>
+
+        {(geoStatus === "denied" || geoStatus === "error" || geoStatus === "unsupported") && (
+          <div className="mb-4 rounded-lg border border-amber-300/30 bg-amber-300/5 px-4 py-2 font-mono text-[10px] uppercase tracking-widest text-amber-200">
+            {geoStatus === "denied" && "Permiso de ubicación denegado. Habilítalo en tu navegador para personalizar tu experiencia."}
+            {geoStatus === "error" && "No se pudo obtener tu ubicación. Revisa tu conexión o GPS."}
+            {geoStatus === "unsupported" && "Tu navegador no soporta geolocalización."}
+          </div>
+        )}
 
         <motion.div
           initial={{ opacity: 0, scale: 0.98 }}

@@ -3,6 +3,7 @@ import { useRef } from "react";
 import { Compass, ChevronDown, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
 import heroImg from "@/assets/hero-rdm.jpg";
+import rdmLogo from "@/assets/rdm-digital-nexus-logo.png";
 import { AuroraBackground, FloatingOrbs } from "@/components/VisualEffects";
 
 const HeroSection = () => {
@@ -28,9 +29,9 @@ const HeroSection = () => {
       <motion.div className="relative flex flex-col items-center justify-center min-h-screen px-6 pb-20 pt-24" style={{ opacity }}>
         <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1.2, delay: 0.3 }}
           className="mb-8">
-          <div className="w-28 h-28 md:w-36 md:h-36 rounded-full flex items-center justify-center animate-float pulse-gold"
-            style={{ background: "radial-gradient(circle, hsl(43, 80%, 55%), hsl(43, 60%, 35%))", filter: "drop-shadow(0 0 30px hsla(43,80%,55%,0.3))" }}>
-            <span className="text-4xl md:text-5xl font-display font-bold" style={{ color: "hsl(220, 45%, 8%)" }}>R</span>
+          <div className="relative w-32 h-32 md:w-44 md:h-44 rounded-full overflow-hidden animate-float pulse-gold ring-2 ring-amber-300/40"
+            style={{ filter: "drop-shadow(0 0 40px hsla(43,80%,55%,0.35))" }}>
+            <img src={rdmLogo} alt="Logo oficial RDM Digital Nexus" className="w-full h-full object-cover" />
           </div>
         </motion.div>
 
