@@ -305,7 +305,21 @@ const MapSection = () => {
               {opt.label}
             </button>
           ))}
+          <button
+            onClick={centerOnUser}
+            className="ml-auto px-3 py-1.5 rounded-lg border border-primary/40 bg-primary/10 text-primary hover:bg-primary/20 transition-all"
+          >
+            {geoStatus === "requesting" ? "Localizando…" : userLocation ? "📍 Centrar en mí" : "📍 Activar ubicación"}
+          </button>
         </div>
+
+        {(geoStatus === "denied" || geoStatus === "error" || geoStatus === "unsupported") && (
+          <div className="mb-4 rounded-lg border border-amber-300/30 bg-amber-300/5 px-4 py-2 font-mono text-[10px] uppercase tracking-widest text-amber-200">
+            {geoStatus === "denied" && "Permiso de ubicación denegado. Habilítalo en tu navegador para personalizar tu experiencia."}
+            {geoStatus === "error" && "No se pudo obtener tu ubicación. Revisa tu conexión o GPS."}
+            {geoStatus === "unsupported" && "Tu navegador no soporta geolocalización."}
+          </div>
+        )}
 
         <motion.div
           initial={{ opacity: 0, scale: 0.98 }}
