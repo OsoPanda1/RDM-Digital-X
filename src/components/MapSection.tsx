@@ -239,6 +239,10 @@ const MapSection = () => {
             ${twin.telemetry.avgStayMinutes ? `<span style="font-size:10px;color:#64748b;font-family:'IBM Plex Mono',monospace;">~${twin.telemetry.avgStayMinutes} min</span>` : ""}
           </div>
           ${twin.telemetry.queueMinutes ? `<div style="font-size:10px;color:#64748b;margin-top:4px;">Espera: ~${twin.telemetry.queueMinutes} min</div>` : ""}
+          <div style="display:flex;gap:6px;margin-top:10px;">
+            <a href="https://www.google.com/maps/dir/?api=1&destination=${twin.lat},${twin.lng}" target="_blank" rel="noopener" style="flex:1;text-align:center;padding:6px 10px;border-radius:8px;background:#0f172a;color:#fff;font-size:11px;text-decoration:none;font-family:'IBM Plex Mono',monospace;letter-spacing:0.08em;text-transform:uppercase;">Cómo llegar</a>
+            <a href="https://www.google.com/maps/search/?api=1&query=${twin.lat},${twin.lng}" target="_blank" rel="noopener" style="padding:6px 10px;border-radius:8px;background:#e2e8f0;color:#0f172a;font-size:11px;text-decoration:none;font-family:'IBM Plex Mono',monospace;letter-spacing:0.08em;text-transform:uppercase;">Ver</a>
+          </div>
         </div>`;
 
       L.marker([twin.lat, twin.lng], { icon })
