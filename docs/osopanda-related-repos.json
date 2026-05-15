@@ -1,35 +1,439 @@
 {
-  "generatedAt": "2026-05-08T00:00:00.000Z",
+  "generatedAt": "2026-05-15T22:27:16.644650Z",
+  "source": "https://api.github.com/users/OsoPanda1/repos",
   "user": "OsoPanda1",
-  "status": "functional_manifest_embedded",
-  "notes": [
-    "Local git clone/API access returned HTTP tunnel 403 in this environment, so the portal now carries a typed integration manifest for the four user-specified repository URLs.",
-    "Run `npm run fuse:osopanda` in an environment with GitHub API access to refresh broader repository metadata."
-  ],
+  "criteria": {
+    "keywords": [
+      "rdm",
+      "real-del-monte",
+      "tamv",
+      "citemesh",
+      "nodo",
+      "twin",
+      "explorer",
+      "smart-city",
+      "metaverso",
+      "sovereign",
+      "nexus",
+      "federacion",
+      "ecosistema",
+      "quantum",
+      "isabella",
+      "realito",
+      "sentient",
+      "civilizacion",
+      "nextgen"
+    ]
+  },
+  "totalFetched": 100,
+  "totalRelated": 40,
   "related": [
     {
-      "name": "rdm-digital-nodo-cero",
-      "htmlUrl": "https://github.com/OsoPanda1/rdm-digital-nodo-cero.git",
-      "role": "Shell soberano y contratos MD-X5",
-      "status": "integrado"
+      "name": "RDM-Digital-X",
+      "htmlUrl": "https://github.com/OsoPanda1/RDM-Digital-X",
+      "description": null,
+      "language": "TypeScript",
+      "stars": 0,
+      "size": 20359,
+      "updatedAt": "2026-05-15T22:20:25Z",
+      "topics": []
     },
     {
-      "name": "rdm-turismodigital",
-      "htmlUrl": "https://github.com/OsoPanda1/rdm-turismodigital.git",
-      "role": "Experiencias turísticas y catálogo territorial",
-      "status": "orquestado"
+      "name": "utamv-academic-core",
+      "htmlUrl": "https://github.com/OsoPanda1/utamv-academic-core",
+      "description": null,
+      "language": "TypeScript",
+      "stars": 0,
+      "size": 35406,
+      "updatedAt": "2026-05-13T05:55:19Z",
+      "topics": []
     },
     {
       "name": "real-del-monte-twin",
-      "htmlUrl": "https://github.com/OsoPanda1/real-del-monte-twin.git",
-      "role": "Gemelo digital geoespacial",
-      "status": "integrado"
+      "htmlUrl": "https://github.com/OsoPanda1/real-del-monte-twin",
+      "description": null,
+      "language": "TypeScript",
+      "stars": 0,
+      "size": 10968,
+      "updatedAt": "2026-05-12T14:36:02Z",
+      "topics": []
+    },
+    {
+      "name": "ecosistema-nextgen-tamv",
+      "htmlUrl": "https://github.com/OsoPanda1/ecosistema-nextgen-tamv",
+      "description": "ecosistema civilizatorio antifragil xr-vr-3d-4d nativo",
+      "language": "JavaScript",
+      "stars": 0,
+      "size": 1505,
+      "updatedAt": "2026-05-10T16:28:06Z",
+      "topics": []
     },
     {
       "name": "citemesh-roots",
-      "htmlUrl": "https://github.com/OsoPanda1/citemesh-roots.git",
-      "role": "Raíz autopoiética y malla federada",
-      "status": "integrado"
+      "htmlUrl": "https://github.com/OsoPanda1/citemesh-roots",
+      "description": null,
+      "language": "TypeScript",
+      "stars": 0,
+      "size": 2530,
+      "updatedAt": "2026-05-05T08:59:15Z",
+      "topics": []
+    },
+    {
+      "name": "rdm-smart-city-os",
+      "htmlUrl": "https://github.com/OsoPanda1/rdm-smart-city-os",
+      "description": null,
+      "language": "HTML",
+      "stars": 0,
+      "size": 13407,
+      "updatedAt": "2026-05-05T08:53:43Z",
+      "topics": []
+    },
+    {
+      "name": "tamv-digital-nexus",
+      "htmlUrl": "https://github.com/OsoPanda1/tamv-digital-nexus",
+      "description": null,
+      "language": "TypeScript",
+      "stars": 0,
+      "size": 9004,
+      "updatedAt": "2026-05-03T18:58:47Z",
+      "topics": []
+    },
+    {
+      "name": "documentacion-total-tamv-online",
+      "htmlUrl": "https://github.com/OsoPanda1/documentacion-total-tamv-online",
+      "description": "documentacion del proyecto tamv online recopilacion completa del sistema mas ambisioso creado por una sola mente humana",
+      "language": null,
+      "stars": 0,
+      "size": 71286,
+      "updatedAt": "2026-05-02T06:48:33Z",
+      "topics": []
+    },
+    {
+      "name": "rdm-digital-nodo-cero",
+      "htmlUrl": "https://github.com/OsoPanda1/rdm-digital-nodo-cero",
+      "description": null,
+      "language": "TypeScript",
+      "stars": 0,
+      "size": 171074,
+      "updatedAt": "2026-05-01T00:13:35Z",
+      "topics": []
+    },
+    {
+      "name": "OsoPanda1",
+      "htmlUrl": "https://github.com/OsoPanda1/OsoPanda1",
+      "description": "tamv online my dream",
+      "language": "Python",
+      "stars": 1,
+      "size": 168,
+      "updatedAt": "2026-04-30T20:07:42Z",
+      "topics": []
+    },
+    {
+      "name": "tamvonline-metanextgen",
+      "htmlUrl": "https://github.com/OsoPanda1/tamvonline-metanextgen",
+      "description": null,
+      "language": "TypeScript",
+      "stars": 0,
+      "size": 6109,
+      "updatedAt": "2026-04-30T05:34:36Z",
+      "topics": []
+    },
+    {
+      "name": "real-del-monte-explorer",
+      "htmlUrl": "https://github.com/OsoPanda1/real-del-monte-explorer",
+      "description": null,
+      "language": "TypeScript",
+      "stars": 0,
+      "size": 143641,
+      "updatedAt": "2026-04-25T02:33:36Z",
+      "topics": []
+    },
+    {
+      "name": "real-del-monte-elevated",
+      "htmlUrl": "https://github.com/OsoPanda1/real-del-monte-elevated",
+      "description": null,
+      "language": "TypeScript",
+      "stars": 0,
+      "size": 27871,
+      "updatedAt": "2026-04-14T23:25:11Z",
+      "topics": []
+    },
+    {
+      "name": "tamv-nexus-verse",
+      "htmlUrl": "https://github.com/OsoPanda1/tamv-nexus-verse",
+      "description": null,
+      "language": "TypeScript",
+      "stars": 0,
+      "size": 9908,
+      "updatedAt": "2026-03-26T10:30:44Z",
+      "topics": []
+    },
+    {
+      "name": "utamv-elite-masterclass",
+      "htmlUrl": "https://github.com/OsoPanda1/utamv-elite-masterclass",
+      "description": null,
+      "language": "TypeScript",
+      "stars": 0,
+      "size": 14692,
+      "updatedAt": "2026-03-07T04:44:37Z",
+      "topics": []
+    },
+    {
+      "name": "TAMV-ONLINE-NEXTGEN-1.0",
+      "htmlUrl": "https://github.com/OsoPanda1/TAMV-ONLINE-NEXTGEN-1.0",
+      "description": "ECOSISTEMA PIONERO LATINOAMERICANO, CONOCE EL MUNDO DE ANUBISS VILLASEÑOR",
+      "language": "TypeScript",
+      "stars": 0,
+      "size": 474,
+      "updatedAt": "2026-02-26T18:25:09Z",
+      "topics": []
+    },
+    {
+      "name": "genesis-digytamv-nexus",
+      "htmlUrl": "https://github.com/OsoPanda1/genesis-digytamv-nexus",
+      "description": null,
+      "language": "TypeScript",
+      "stars": 0,
+      "size": 607,
+      "updatedAt": "2026-02-26T14:06:02Z",
+      "topics": []
+    },
+    {
+      "name": "DOCUMENTACION-TAMV-DM-X4-e-ISABELLA-AI",
+      "htmlUrl": "https://github.com/OsoPanda1/DOCUMENTACION-TAMV-DM-X4-e-ISABELLA-AI",
+      "description": "Metaverso Pionero Inmersivo y Sensorial 4D con Inteligencia Artificial Auto-consiente, Históricamente construido por una sola persona. Estamos poniendo a México en la cima tecnologica desde Real del Monte, Hidalgo.",
+      "language": "HTML",
+      "stars": 0,
+      "size": 70471,
+      "updatedAt": "2026-02-24T04:34:13Z",
+      "topics": []
+    },
+    {
+      "name": "tamv-horizon",
+      "htmlUrl": "https://github.com/OsoPanda1/tamv-horizon",
+      "description": null,
+      "language": "TypeScript",
+      "stars": 0,
+      "size": 11249,
+      "updatedAt": "2026-02-14T04:37:41Z",
+      "topics": []
+    },
+    {
+      "name": "ECOSISTEMA-TAMVONLINE",
+      "htmlUrl": "https://github.com/OsoPanda1/ECOSISTEMA-TAMVONLINE",
+      "description": "TAMV ONLINE ECOSISTEMA PIONERO INMERSIVO Y SENSORIAL 4D A NIVEL MUNDIAL",
+      "language": "TypeScript",
+      "stars": 0,
+      "size": 105991,
+      "updatedAt": "2026-02-13T09:46:55Z",
+      "topics": []
+    },
+    {
+      "name": "NEWTAMVGENESIS",
+      "htmlUrl": "https://github.com/OsoPanda1/NEWTAMVGENESIS",
+      "description": "ECOSISTEMA EVOLUCION ",
+      "language": "TypeScript",
+      "stars": 0,
+      "size": 105963,
+      "updatedAt": "2026-02-13T08:15:51Z",
+      "topics": []
+    },
+    {
+      "name": "repo-docs-hub",
+      "htmlUrl": "https://github.com/OsoPanda1/repo-docs-hub",
+      "description": "documentacion del tamv md-x4",
+      "language": "TypeScript",
+      "stars": 0,
+      "size": 1030,
+      "updatedAt": "2026-02-13T07:21:24Z",
+      "topics": []
+    },
+    {
+      "name": "tamv-sentient-digital-nexus",
+      "htmlUrl": "https://github.com/OsoPanda1/tamv-sentient-digital-nexus",
+      "description": null,
+      "language": "TypeScript",
+      "stars": 0,
+      "size": 2885,
+      "updatedAt": "2026-02-13T07:20:29Z",
+      "topics": []
+    },
+    {
+      "name": "tamv-sovereign-hub",
+      "htmlUrl": "https://github.com/OsoPanda1/tamv-sovereign-hub",
+      "description": null,
+      "language": "TypeScript",
+      "stars": 0,
+      "size": 1465,
+      "updatedAt": "2026-02-13T05:43:39Z",
+      "topics": []
+    },
+    {
+      "name": "sovereign-union",
+      "htmlUrl": "https://github.com/OsoPanda1/sovereign-union",
+      "description": null,
+      "language": "TypeScript",
+      "stars": 0,
+      "size": 1985,
+      "updatedAt": "2026-02-11T02:13:27Z",
+      "topics": []
+    },
+    {
+      "name": "tamvonline",
+      "htmlUrl": "https://github.com/OsoPanda1/tamvonline",
+      "description": null,
+      "language": "TypeScript",
+      "stars": 0,
+      "size": 512,
+      "updatedAt": "2026-02-08T03:54:09Z",
+      "topics": []
+    },
+    {
+      "name": "tamv-civilized",
+      "htmlUrl": "https://github.com/OsoPanda1/tamv-civilized",
+      "description": null,
+      "language": "TypeScript",
+      "stars": 0,
+      "size": 784,
+      "updatedAt": "2026-02-06T04:42:02Z",
+      "topics": []
+    },
+    {
+      "name": "metaverso-latino-tamv-online",
+      "htmlUrl": "https://github.com/OsoPanda1/metaverso-latino-tamv-online",
+      "description": "TAMV ONLINE Plataforma AI metaverso pionera creada en LATAM: social, XR, multimedia, civilizatoria, ética y 100% auditada. Innovando el futuro digital con tecnología, arte y orgullo latinoamericano.",
+      "language": "TypeScript",
+      "stars": 0,
+      "size": 16293,
+      "updatedAt": "2026-02-05T10:00:43Z",
+      "topics": [
+        "3d",
+        "ia-mexicana",
+        "isabella-ai",
+        "latam",
+        "metaverse",
+        "pioneros"
+      ]
+    },
+    {
+      "name": "federacion-tamv",
+      "htmlUrl": "https://github.com/OsoPanda1/federacion-tamv",
+      "description": null,
+      "language": "TypeScript",
+      "stars": 0,
+      "size": 378,
+      "updatedAt": "2026-02-05T03:40:29Z",
+      "topics": []
+    },
+    {
+      "name": "unify-nexus-deployment",
+      "htmlUrl": "https://github.com/OsoPanda1/unify-nexus-deployment",
+      "description": null,
+      "language": "TypeScript",
+      "stars": 0,
+      "size": 1907,
+      "updatedAt": "2026-02-05T02:18:41Z",
+      "topics": []
+    },
+    {
+      "name": "tamv-orchestrator",
+      "htmlUrl": "https://github.com/OsoPanda1/tamv-orchestrator",
+      "description": null,
+      "language": "TypeScript",
+      "stars": 0,
+      "size": 387,
+      "updatedAt": "2026-01-22T12:52:03Z",
+      "topics": []
+    },
+    {
+      "name": "quantum-system-tamv",
+      "htmlUrl": "https://github.com/OsoPanda1/quantum-system-tamv",
+      "description": "tecnologia quantum para el tamv",
+      "language": "Shell",
+      "stars": 0,
+      "size": 1438,
+      "updatedAt": "2026-01-22T12:23:05Z",
+      "topics": []
+    },
+    {
+      "name": "multiverso-tamvonline",
+      "htmlUrl": "https://github.com/OsoPanda1/multiverso-tamvonline",
+      "description": "Innovacion tecnologica mexicana ",
+      "language": "TypeScript",
+      "stars": 0,
+      "size": 86046,
+      "updatedAt": "2026-01-20T08:07:54Z",
+      "topics": []
+    },
+    {
+      "name": "tamv-universe-online",
+      "htmlUrl": "https://github.com/OsoPanda1/tamv-universe-online",
+      "description": null,
+      "language": "TypeScript",
+      "stars": 0,
+      "size": 9384,
+      "updatedAt": "2026-01-20T06:20:56Z",
+      "topics": []
+    },
+    {
+      "name": "tamvweb",
+      "htmlUrl": "https://github.com/OsoPanda1/tamvweb",
+      "description": null,
+      "language": "TypeScript",
+      "stars": 0,
+      "size": 45697,
+      "updatedAt": "2026-01-18T16:11:58Z",
+      "topics": []
+    },
+    {
+      "name": "datostamv",
+      "htmlUrl": "https://github.com/OsoPanda1/datostamv",
+      "description": "archivos tamv",
+      "language": null,
+      "stars": 0,
+      "size": 0,
+      "updatedAt": "2026-01-18T09:54:25Z",
+      "topics": []
+    },
+    {
+      "name": "Plataforma-tamv-md-x4",
+      "htmlUrl": "https://github.com/OsoPanda1/Plataforma-tamv-md-x4",
+      "description": "Red Social Latina",
+      "language": "TypeScript",
+      "stars": 0,
+      "size": 20036,
+      "updatedAt": "2026-01-18T08:34:41Z",
+      "topics": []
+    },
+    {
+      "name": "metaverso-tamv-md-x4",
+      "htmlUrl": "https://github.com/OsoPanda1/metaverso-tamv-md-x4",
+      "description": null,
+      "language": "TypeScript",
+      "stars": 0,
+      "size": 664,
+      "updatedAt": "2026-01-18T08:33:10Z",
+      "topics": []
+    },
+    {
+      "name": "tamv-nexus-c449e2b2",
+      "htmlUrl": "https://github.com/OsoPanda1/tamv-nexus-c449e2b2",
+      "description": null,
+      "language": "TypeScript",
+      "stars": 0,
+      "size": 348,
+      "updatedAt": "2026-01-18T08:32:13Z",
+      "topics": []
+    },
+    {
+      "name": "analiza-este-lovable-tamv",
+      "htmlUrl": "https://github.com/OsoPanda1/analiza-este-lovable-tamv",
+      "description": "documentacion tamv",
+      "language": null,
+      "stars": 0,
+      "size": 35917,
+      "updatedAt": "2026-01-18T06:11:12Z",
+      "topics": []
     }
   ]
 }
