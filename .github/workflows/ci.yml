@@ -48,6 +48,14 @@ jobs:
       - name: Frontend build
         run: npm run build
 
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: E2E tests (Playwright, headless)
+        run: npm run test:e2e
+        env:
+          CI: "true"
+
       - name: Backend build
         run: npm run build
         working-directory: server
