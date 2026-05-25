@@ -4,6 +4,7 @@ import express from "express";
 import apiRouter from "./routes/index.js";
 import { config } from "./config.js";
 import { errorHandler, notFoundHandler } from "./middleware/http.js";
+import { constitutionalGuard } from "./middleware/constitutionalGuard.js";
 
 export const app = express();
 
@@ -32,7 +33,7 @@ app.get("/healthz", (_req, res) => {
   res.json({ ok: true, service: "rdmx-api" });
 });
 
-app.use("/api", apiRouter);
+app.use("/api", constitutionalGuard, apiRouter);
 app.use(notFoundHandler);
 app.use(errorHandler);
 
