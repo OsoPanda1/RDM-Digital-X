@@ -1,0 +1,17 @@
+{
+  "name": "RDM Digital Nexus — Real del Monte",
+  "short_name": "RDM Digital",
+  "description": "Plataforma turística inmersiva de Real del Monte, Hidalgo. Gemelo Digital, Realito AI y catálogo soberano.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#c9a84c",
+  "orientation": "portrait-primary",
+  "lang": "es-MX",
+  "icons": [
+    { "src": "/og-rdm-nexus.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/og-rdm-nexus.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "categories": ["travel", "lifestyle", "education"]
+}
