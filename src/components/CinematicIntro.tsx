@@ -51,11 +51,12 @@ const CinematicIntro = ({ onComplete }: CinematicIntroProps) => {
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.8 }}
                     transition={{ duration: 1 }}
-                    className="w-24 h-24 mx-auto rounded-full pulse-gold flex items-center justify-center"
-                    style={{ background: "radial-gradient(circle, hsl(43, 80%, 55%), hsl(43, 60%, 35%))", filter: "drop-shadow(0 0 40px hsla(43, 80%, 55%, 0.4))" }}
+                    className="w-32 h-32 md:w-40 md:h-40 mx-auto rounded-full overflow-hidden pulse-gold ring-2 ring-[hsl(var(--gold))]/40"
+                    style={{ filter: "drop-shadow(0 0 50px hsla(43, 80%, 55%, 0.45))" }}
                   >
-                    <span className="text-3xl font-display font-bold" style={{ color: "hsl(220, 45%, 8%)" }}>R</span>
+                    <img src={rdmBadge} alt="Insignia oficial RDM Digital · Real del Monte" className="w-full h-full object-cover" />
                   </motion.div>
+
                   <motion.h1
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
