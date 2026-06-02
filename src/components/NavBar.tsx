@@ -11,6 +11,7 @@ const navItems = [
   { label: "Rutas", path: "/rutas" },
   { label: "Comercios", path: "/catalogo" },
   { label: "Eventos", path: "/eventos" },
+  { label: "Mina ⛏️", path: "/mina" },
   { label: "TAMV", path: "/tamv" },
   { label: "Fusión", path: "/fusion" },
   { label: "Tenochtitlán", path: "/tenochtitlan" },
