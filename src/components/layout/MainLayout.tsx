@@ -3,6 +3,7 @@ import NavBar from "@/components/NavBar";
 import FooterSection from "@/components/FooterSection";
 import RealitoOrb from "@/components/RealitoOrb";
 import FloatingParticles from "@/components/FloatingParticles";
+import AmbientAudio from "@/components/AmbientAudio";
 
 export default function MainLayout({ children }: { children: ReactNode }) {
   return (
