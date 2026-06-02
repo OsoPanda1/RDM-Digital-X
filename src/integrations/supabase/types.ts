@@ -14,6 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      game_memberships: {
+        Row: {
+          created_at: string
+          current_period_end: string | null
+          id: string
+          price_mxn: number
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          current_period_end?: string | null
+          id?: string
+          price_mxn?: number
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          current_period_end?: string | null
+          id?: string
+          price_mxn?: number
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       merchant_categories: {
         Row: {
           active: boolean
@@ -164,6 +194,174 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      mineral_balances: {
+        Row: {
+          carbon: number
+          created_at: string
+          cuarzo: number
+          energy: number
+          energy_updated_at: string
+          id: string
+          oro: number
+          plata: number
+          puntos: number
+          total_mined: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          carbon?: number
+          created_at?: string
+          cuarzo?: number
+          energy?: number
+          energy_updated_at?: string
+          id?: string
+          oro?: number
+          plata?: number
+          puntos?: number
+          total_mined?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          carbon?: number
+          created_at?: string
+          cuarzo?: number
+          energy?: number
+          energy_updated_at?: string
+          id?: string
+          oro?: number
+          plata?: number
+          puntos?: number
+          total_mined?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      mining_events: {
+        Row: {
+          amount: number
+          created_at: string
+          id: string
+          mineral: string
+          points: number
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          id?: string
+          mineral: string
+          points?: number
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          id?: string
+          mineral?: string
+          points?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          display_name: string | null
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      reward_redemptions: {
+        Row: {
+          cost_points: number
+          created_at: string
+          id: string
+          reward_id: string
+          reward_name: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          cost_points: number
+          created_at?: string
+          id?: string
+          reward_id: string
+          reward_name: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          cost_points?: number
+          created_at?: string
+          id?: string
+          reward_id?: string
+          reward_name?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      rewards_catalog: {
+        Row: {
+          active: boolean
+          category: string
+          cost_points: number
+          created_at: string
+          description: string | null
+          id: string
+          image_url: string | null
+          name: string
+          stock: number
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          category?: string
+          cost_points: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          name: string
+          stock?: number
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          category?: string
+          cost_points?: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          name?: string
+          stock?: number
+          updated_at?: string
+        }
+        Relationships: []
       }
       user_roles: {
         Row: {
