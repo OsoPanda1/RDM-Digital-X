@@ -1,5 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
+import rdmBadge from "@/assets/rdm-logo-badge.png";
 
 interface CinematicIntroProps {
   onComplete: () => void;
