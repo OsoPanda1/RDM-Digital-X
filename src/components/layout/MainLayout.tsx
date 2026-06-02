@@ -16,6 +16,7 @@ export default function MainLayout({ children }: { children: ReactNode }) {
         <main className="min-h-screen pt-24">{children}</main>
         <FooterSection />
         <RealitoOrb />
+        <AmbientAudio />
       </div>
     </div>
   );
