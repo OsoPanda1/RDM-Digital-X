@@ -3,6 +3,7 @@
 // Multi-objective evolutionary algorithm for antifragile routes
 // ================================================================
 
+import crypto from "crypto";
 import type {
   TwinContext,
   UserPreferences,
@@ -73,14 +74,19 @@ function evaluateFitness(
   const crowd = crowdPenalty(candidate, maxCrowd);
   const merchant = merchantBalance(candidate);
 
-  // Estimated duration: 25 min avg per stop + walking time (5 km/h)
+  // Estimated duration: 25 min avg per stop + walking time (5 km/h ~ turismo relajado) [web:360][web:363]
   const walkingMin = (dist / 5) * 60;
   const dwellMin = candidate.length * 25;
   const totalMin = walkingMin + dwellMin;
 
-  // Time fit: penalize if total duration exceeds available time
-  const availMin = (prefs.availableMinutes ?? prefs.durationHours ? (prefs.durationHours ?? 3) * 60 : 180);
-  const timeFit = totalMin <= availMin ? 1 : Math.max(0, 1 - (totalMin - availMin) / availMin);
+  // Time fit: penalize si excede el tiempo disponible
+  const availMin =
+    prefs.availableMinutes ??
+    (prefs.durationHours !== undefined ? prefs.durationHours * 60 : 180);
+  const timeFit =
+    totalMin <= availMin
+      ? 1
+      : Math.max(0, 1 - (totalMin - availMin) / availMin);
 
   // Interest affinity
   const interests = prefs.interests ?? [];
@@ -89,27 +95,36 @@ function evaluateFitness(
     candidate.forEach((s) => {
       const tags = s.tags.map((t) => t.toUpperCase());
       const type = (s.properties.type ?? "").toUpperCase();
-      if (interests.some((i) => tags.includes(i.toUpperCase()) || type.includes(i.toUpperCase()))) {
+      if (
+        interests.some(
+          (i) =>
+            tags.includes(i.toUpperCase()) ||
+            type.includes(i.toUpperCase()),
+        )
+      ) {
         interestHits++;
       }
     });
   }
-  const interestScore = interests.length > 0
-    ? interestHits / Math.max(candidate.length, 1)
-    : 0.5;
+  const interestScore =
+    interests.length > 0
+      ? interestHits / Math.max(candidate.length, 1)
+      : 0.5;
 
   // Immersion bonus
-  const immersionAvg = candidate.reduce((a, s) => a + s.immersionLevel, 0) / Math.max(candidate.length, 1);
+  const immersionAvg =
+    candidate.reduce((a, s) => a + s.immersionLevel, 0) /
+    Math.max(candidate.length, 1);
 
-  // Multi-objective weighted fitness
+  // Multi-objective weighted fitness (suma ~ 0-80+)
   const fitness =
-    div * 25 +                            // diversity: 0-25
-    (1 - Math.min(crowd, 1)) * 20 +       // low crowd: 0-20
-    merchant * 15 +                        // merchant balance: 0-15
-    timeFit * 20 +                         // time fit: 0-20
-    interestScore * 15 +                   // interest affinity: 0-15
-    immersionAvg * 5 +                     // immersion: 0-5
-    candidate.length * 2;                  // more stops = slightly better
+    div * 25 + // diversity: 0-25
+    (1 - Math.min(crowd, 1)) * 20 + // low crowd: 0-20
+    merchant * 15 + // merchant balance: 0-15
+    timeFit * 20 + // time fit: 0-20
+    interestScore * 15 + // interest affinity: 0-15
+    immersionAvg * 5 + // immersion: 0-5
+    candidate.length * 2; // more stops = slightly better
 
   return {
     fitness,
@@ -180,7 +195,8 @@ export const optimizeRoute = async (
       fitnessScore: 0,
       confidenceScore: 0,
       geneticGen: "GA-FALLBACK",
-      explanation: "No hay gemelos digitales activos para construir una ruta.",
+      explanation:
+        "No hay gemelos digitales activos para construir una ruta.",
       objectives: {
         distanceKm: 0,
         diversityScore: 0,
@@ -192,9 +208,15 @@ export const optimizeRoute = async (
     };
   }
 
-  const availMin = userPreferences.availableMinutes
-    ?? (userPreferences.durationHours ? userPreferences.durationHours * 60 : 180);
-  const maxStops = Math.min(Math.ceil(availMin / 30), placeTwins.length);
+  const availMin =
+    userPreferences.availableMinutes ??
+    (userPreferences.durationHours !== undefined
+      ? userPreferences.durationHours * 60
+      : 180);
+  const maxStops = Math.min(
+    Math.ceil(availMin / 30),
+    placeTwins.length,
+  );
 
   // GA parameters
   const POPULATION_SIZE = 40;
@@ -202,28 +224,32 @@ export const optimizeRoute = async (
   const ELITE_COUNT = 4;
 
   // 1. Generate initial population
-  let population: TwinContext[][] = Array.from({ length: POPULATION_SIZE }, () =>
-    randomRoute(placeTwins, maxStops),
+  let population: TwinContext[][] = Array.from(
+    { length: POPULATION_SIZE },
+    () => randomRoute(placeTwins, maxStops),
   );
 
   // 2. Evolve
   for (let gen = 0; gen < GENERATIONS; gen++) {
-    // Evaluate and sort
     const evaluated = population.map((route) => ({
       route,
       ...evaluateFitness(route, userPreferences),
     }));
     evaluated.sort((a, b) => b.fitness - a.fitness);
 
-    // Elite carry-over
     const nextGen: TwinContext[][] = evaluated
       .slice(0, ELITE_COUNT)
       .map((e) => e.route);
 
-    // Fill rest with crossover + mutation
     while (nextGen.length < POPULATION_SIZE) {
-      const parentA = evaluated[Math.floor(Math.random() * Math.min(10, evaluated.length))].route;
-      const parentB = evaluated[Math.floor(Math.random() * Math.min(10, evaluated.length))].route;
+      const parentA =
+        evaluated[
+          Math.floor(Math.random() * Math.min(10, evaluated.length))
+        ].route;
+      const parentB =
+        evaluated[
+          Math.floor(Math.random() * Math.min(10, evaluated.length))
+        ].route;
       let child = crossover(parentA, parentB);
       child = mutate(child, placeTwins);
       nextGen.push(child);
@@ -248,8 +274,10 @@ export const optimizeRoute = async (
     const dwellMin = twin.modelType === "MERCHANT_TWIN" ? 20 : 30;
     if (idx > 0) {
       const dist = haversineKm(
-        best.route[idx - 1].lat, best.route[idx - 1].lng,
-        twin.lat, twin.lng,
+        best.route[idx - 1].lat,
+        best.route[idx - 1].lng,
+        twin.lat,
+        twin.lng,
       );
       cumulativeMin += (dist / 5) * 60; // 5 km/h walking
     }
@@ -273,7 +301,10 @@ export const optimizeRoute = async (
     fitnessScore: Math.round(best.fitness * 100) / 100,
     confidenceScore: Math.round(confidence * 100) / 100,
     geneticGen: `RDM-X-GA-v3.${GENERATIONS}gen`,
-    explanation: `Ruta generada con algoritmo genético (${GENERATIONS} generaciones, población ${POPULATION_SIZE}). Optimiza diversidad temática, baja saturación, balance comercio/cultura y ajuste temporal.`,
+    explanation:
+      `Ruta generada con algoritmo genético (${GENERATIONS} generaciones, ` +
+      `población ${POPULATION_SIZE}). Optimiza diversidad temática, baja ` +
+      `saturación, balance comercio/cultura y ajuste temporal.`,
     objectives: best.objectives,
     stops,
   };
