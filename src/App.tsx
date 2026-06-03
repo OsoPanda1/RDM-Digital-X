@@ -36,6 +36,10 @@ const Operativo = lazy(() => import("./pages/Operativo"));
 const Evolucion = lazy(() => import("./pages/Evolucion"));
 const Auth = lazy(() => import("./pages/Auth"));
 const Mina = lazy(() => import("./pages/Mina"));
+const Perfil = lazy(() => import("./pages/Perfil"));
+const Membresias = lazy(() => import("./pages/Membresias"));
+const FAQ = lazy(() => import("./pages/FAQ"));
+const Ajustes = lazy(() => import("./pages/Ajustes"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
@@ -84,6 +88,10 @@ const AnimatedRoutes = () => {
           <Route path="/evolucion" element={<Evolucion />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/mina" element={<Mina />} />
+          <Route path="/perfil" element={<Perfil />} />
+          <Route path="/membresias" element={<Membresias />} />
+          <Route path="/faq" element={<FAQ />} />
+          <Route path="/ajustes" element={<Ajustes />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>
