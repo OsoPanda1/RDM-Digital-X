@@ -1,14 +1,24 @@
 import { db } from "../lib/store.js";
 
 export function getEconomySummary(): string {
-  const totalDonations = [...db.donations.values()].reduce((acc, donation) => acc + donation.amount, 0);
-  const totalEntries = db.ledger.size;
-  const activeMemberships = [...db.memberships.values()].filter((membership) => membership.active).length;
+  const donations = [...db.donations.values()];
 
-  return [
-    `Donaciones registradas: ${db.donations.size}`,
-    `Monto acumulado (MXN): ${totalDonations}`,
+  const totalDonations = donations.reduce(
+    (acc, donation) => acc + (Number(donation.amount) || 0),
+    0,
+  );
+
+  const totalEntries = db.ledger.size;
+  const activeMemberships = [...db.memberships.values()].filter(
+    (membership) => membership.active,
+  ).length;
+
+  const lines = [
+    `Donaciones registradas: ${donations.length}`,
+    `Monto acumulado (MXN): ${totalDonations.toFixed(2)}`,
     `Membresías activas: ${activeMemberships}`,
     `Movimientos de ledger: ${totalEntries}`,
-  ].join("\n");
+  ];
+
+  return lines.join("\n");
 }
