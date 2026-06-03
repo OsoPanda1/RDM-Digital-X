@@ -1,5 +1,5 @@
 // ============================================================================
-// RDM Digital OS — Economy Kernel v3
+// RDM Digital OS — Economy Kernel v3 (refined)
 // Membership tiers, dynamic quotas, token ledger, audit & HTTP API
 // ============================================================================
 
@@ -35,7 +35,6 @@ export interface LedgerEntry {
   amount: number;
   reason: string;
   createdAt: string;
-  // Para trazabilidad básica
   sessionId?: string;
   requestId?: string;
 }
@@ -45,7 +44,6 @@ export interface QuotaSnapshot {
   tier: MembershipTier;
   baseQuota: number;
   effectiveQuota: number;
-  // Tokens consumidos en la ventana activa
   consumedInWindow: number;
   windowStartedAt: string;
   refreshedAt: string;
@@ -210,7 +208,7 @@ export function resolveDynamicQuota(userId: string): QuotaSnapshot {
 
 /**
  * Intenta consumir tokens de la cuota dinámica.
- * Devuelve true si la operación es posible sin exceder la cuota.
+ * Devuelve ok=false si se excede la cuota.
  */
 export function tryConsumeQuota(
   userId: string,
@@ -318,7 +316,7 @@ export function createLedgerEntryTransaction(
     category: "economy.token.ledger",
     summary: `Ledger ${input.kind} ${amount}`,
     payload: {
-      userId: input.userId,
+    userId: input.userId,
       entryId: id,
       kind: input.kind,
       amount,
@@ -574,7 +572,6 @@ export function handleDebitTokens(req: RequestLike, res: ResponseLike) {
     const amount = Number(req.body?.amount ?? 0);
     const reason = String(req.body?.reason ?? "debit");
 
-    // Validación de gasto a nivel de sesión
     const sessionId = req.sessionId ?? "anonymous-session";
     const validation = sessionSpendingValidator.validate(
       { userId, sessionId },
@@ -598,7 +595,9 @@ export function handleDebitTokens(req: RequestLike, res: ResponseLike) {
       requestId: req.requestId,
     });
 
-    res.status(200).json({ entry, balance, remainingSession: validation.remaining });
+    res
+      .status(200)
+      .json({ entry, balance, remainingSession: validation.remaining });
   } catch (err: any) {
     res.status(400).json({ error: err?.message ?? "Bad Request" });
   }
