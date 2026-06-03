@@ -17,7 +17,20 @@ const AmbientAudio = () => {
     audio.volume = 0.35;
     audio.preload = "none";
     audioRef.current = audio;
+
+    const onPref = async (e: Event) => {
+      const want = (e as CustomEvent).detail as boolean;
+      if (want) {
+        try { await audio.play(); setPlaying(true); } catch { setPlaying(false); }
+      } else {
+        audio.pause();
+        setPlaying(false);
+      }
+    };
+    window.addEventListener("rdm:sound", onPref as EventListener);
+
     return () => {
+      window.removeEventListener("rdm:sound", onPref as EventListener);
       audio.pause();
       audioRef.current = null;
     };
@@ -29,11 +42,13 @@ const AmbientAudio = () => {
     if (playing) {
       audio.pause();
       setPlaying(false);
+      localStorage.setItem("rdm_sound", "0");
       return;
     }
     try {
       await audio.play();
       setPlaying(true);
+      localStorage.setItem("rdm_sound", "1");
     } catch {
       setPlaying(false);
     }
