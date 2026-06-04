@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link, useLocation } from "react-router-dom";
-import { Heart, ChevronDown, User } from "lucide-react";
+import { Heart, ChevronDown, User, ShieldCheck } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { useUserRole } from "@/hooks/useUserRole";
 import rdmLogo from "@/assets/rdm-digital-nexus-logo.png";
 
 type NavChild = { label: string; path: string; preview: string };
