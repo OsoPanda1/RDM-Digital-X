@@ -78,15 +78,31 @@ const RealitoOrb = () => {
         variants={orbVariants}
         animate={isOpen ? "active" : "idle"}
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-8 right-8 z-50 w-14 h-14 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center cursor-pointer"
+        className="group fixed bottom-8 right-8 z-50 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-primary to-accent cursor-pointer"
         style={{
-          boxShadow: "0 0 35px hsla(var(--primary) / 0.4)",
-          borderTop: "1px solid hsla(var(--foreground) / 0.2)",
+          boxShadow: "0 0 40px hsla(var(--primary) / 0.5), inset 0 1px 1px hsla(var(--foreground) / 0.25)",
         }}
+        whileHover={{ scale: 1.08 }}
         whileTap={{ scale: 0.9 }}
-        aria-label="Abrir Realito AI"
+        aria-label="Abrir Realito AI — guía territorial"
       >
-        <span className="text-primary-foreground font-bold text-lg">R</span>
+        {/* Animated halo rings */}
+        <motion.span
+          className="pointer-events-none absolute inset-0 rounded-full border border-primary/40"
+          animate={{ scale: [1, 1.6], opacity: [0.6, 0] }}
+          transition={{ repeat: Infinity, duration: 2.4, ease: "easeOut" }}
+        />
+        <motion.span
+          className="pointer-events-none absolute inset-0 rounded-full border border-accent/30"
+          animate={{ scale: [1, 1.9], opacity: [0.4, 0] }}
+          transition={{ repeat: Infinity, duration: 2.4, ease: "easeOut", delay: 1.1 }}
+        />
+        <span className="relative h-11 w-11 overflow-hidden rounded-full ring-2 ring-white/30 shadow-inner">
+          <img src={rdmBadge} alt="Realito AI" className="h-full w-full object-cover" />
+        </span>
+        {!isOpen && (
+          <span className="absolute -top-1 -right-1 h-3.5 w-3.5 rounded-full bg-emerald-400 ring-2 ring-background" />
+        )}
       </motion.button>
 
       {/* Chat panel */}
