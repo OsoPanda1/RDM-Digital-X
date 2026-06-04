@@ -40,6 +40,7 @@ const Perfil = lazy(() => import("./pages/Perfil"));
 const Membresias = lazy(() => import("./pages/Membresias"));
 const FAQ = lazy(() => import("./pages/FAQ"));
 const Ajustes = lazy(() => import("./pages/Ajustes"));
+const Admin = lazy(() => import("./pages/Admin"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
