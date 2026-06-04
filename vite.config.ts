@@ -11,10 +11,17 @@ export default defineConfig(({ mode }) => ({
     hmr: {
       overlay: false,
     },
+    headers: {
+      "X-Content-Type-Options": "nosniff",
+      "X-Frame-Options": "DENY",
+      "Referrer-Policy": "strict-origin-when-cross-origin",
+      "Permissions-Policy": "geolocation=(self), camera=(), microphone=(), payment=(self)",
+    },
     proxy: {
       "/api": {
         target: "http://localhost:8787",
         changeOrigin: true,
+        secure: true,
       },
     },
   },
