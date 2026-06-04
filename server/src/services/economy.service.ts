@@ -3,6 +3,7 @@
 // Membership tiers, dynamic quotas, token ledger, audit & HTTP API
 // ============================================================================
 
+import { randomUUID } from "node:crypto";
 import { db } from "../lib/store.js";
 import { emitMsrEvent } from "./audit.service.js";
 
@@ -65,23 +66,7 @@ const QUOTA_WINDOW_MS = 24 * 60 * 60 * 1000;
 // ---------------------------------------------------------------------------
 
 function generateId(): string {
-  if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
-    return crypto.randomUUID();
-  }
-  if (typeof crypto !== "undefined" && "getRandomValues" in crypto) {
-    const buf = new Uint8Array(16);
-    crypto.getRandomValues(buf);
-    const toHex = (n: number) => n.toString(16).padStart(2, "0");
-    const hex = Array.from(buf, toHex).join("");
-    return [
-      hex.slice(0, 8),
-      hex.slice(8, 12),
-      hex.slice(12, 16),
-      hex.slice(16, 20),
-      hex.slice(20),
-    ].join("-");
-  }
-  return `uuid-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+  return randomUUID();
 }
 
 function isoNow(): string {
@@ -316,7 +301,7 @@ export function createLedgerEntryTransaction(
     category: "economy.token.ledger",
     summary: `Ledger ${input.kind} ${amount}`,
     payload: {
-    userId: input.userId,
+      userId: input.userId,
       entryId: id,
       kind: input.kind,
       amount,
@@ -327,6 +312,10 @@ export function createLedgerEntryTransaction(
   });
 
   return { entry, balance };
+}
+
+export function createLedgerEntry(input: CreateLedgerEntryInput) {
+  return createLedgerEntryTransaction(input);
 }
 
 // ---------------------------------------------------------------------------
@@ -440,8 +429,8 @@ export function auditTierUsage(ctx: EconomyAuditContext): void {
       tier: ctx.tier,
       path: ctx.path,
       method: ctx.method,
-      sessionId: ctx.sessionId,
-      requestId: ctx.requestId,
+      sessionId: ctx.sessionId ?? "",
+      requestId: ctx.requestId ?? "",
     },
   });
 }

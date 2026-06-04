@@ -53,11 +53,21 @@ model Place {
   name        String
   description String    @db.Text
   type        String
-  location    Json
-  data        Json      @default("{}")
+  latitude    Float
+  longitude   Float
+  altitude    Float?
+  city        String    @default("Real del Monte")
+  state       String    @default("Hidalgo")
+  country     String    @default("México")
+  metadata    Json      @default("{}")
   isFeatured  Boolean   @default(false)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+
+  @@index([city])
+  @@index([state])
+  @@index([latitude, longitude])
+  @@index([type, isFeatured])
 }
 
 model Merchant {
@@ -69,7 +79,11 @@ model Merchant {
   description     String   @db.Text
   priceRange      String
   address         String
-  location        Json?
+  latitude        Float?
+  longitude       Float?
+  city            String   @default("Real del Monte")
+  state           String   @default("Hidalgo")
+  country         String   @default("México")
   phone           String?
   website         String?
   mainImage       String?
@@ -78,6 +92,10 @@ model Merchant {
   isActive        Boolean  @default(true)
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+
+  @@index([category, isActive])
+  @@index([city])
+  @@index([latitude, longitude])
 }
 
 model Route {

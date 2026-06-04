@@ -1,8 +1,7 @@
 import { Router } from "express";
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
 import { z } from "zod";
-import { config } from "../config.js";
+import { signAuthToken } from "../middleware/auth.js";
 import { db } from "../lib/store.js";
 import { ensureProfile } from "../services/user.service.js";
 import { ensureMembership, ensureTokenBalance } from "../services/economy.service.js";
@@ -39,7 +38,7 @@ authRouter.post("/register", async (req, res) => {
   ensureMembership(id);
   ensureTokenBalance(id);
 
-  const token = jwt.sign({ sub: id, role: normalizedRole }, config.jwtSecret, { expiresIn: "7d" });
+  const token = signAuthToken({ id, role: normalizedRole });
   return res.status(201).json({ token, user: { id, email, role: normalizedRole } });
 });
 
@@ -49,7 +48,7 @@ authRouter.post("/login", async (req, res) => {
     return res.status(400).json({ error: parsed.error.flatten() });
   }
 
-  const { email, password, role } = parsed.data;
+  const { email, password } = parsed.data;
   const userId = db.usersByEmail.get(email);
 
   if (!userId) {
@@ -66,7 +65,7 @@ authRouter.post("/login", async (req, res) => {
     return res.status(401).json({ error: "Invalid credentials" });
   }
 
-  const token = jwt.sign({ sub: user.id, role: user.role }, config.jwtSecret, { expiresIn: "7d" });
+  const token = signAuthToken({ id: user.id, role: user.role });
   return res.json({ token, user: { id: user.id, email: user.email, role: user.role } });
 });
 
