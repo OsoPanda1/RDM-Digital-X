@@ -70,6 +70,7 @@ const NavBar = () => {
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
   const { user } = useAuth();
+  const { isAdmin } = useUserRole();
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 60);
