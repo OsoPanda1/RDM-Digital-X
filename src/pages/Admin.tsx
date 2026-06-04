@@ -86,7 +86,7 @@ export default function Admin() {
 
   const updateReward = async (id: string, patch: Partial<RewardRow>) => {
     setBusyId(id);
-    const { error } = await supabase.from("rewards_catalog").update(patch).eq("id", id);
+    const { error } = await supabase.from("rewards_catalog").update(patch as never).eq("id", id);
     setBusyId(null);
     if (error) return toast.error("No se pudo actualizar la recompensa: " + error.message);
     setRewards((prev) => prev.map((x) => (x.id === id ? { ...x, ...patch } : x)));
