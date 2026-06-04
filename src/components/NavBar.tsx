@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link, useLocation } from "react-router-dom";
-import { Heart, ChevronDown, User } from "lucide-react";
+import { Heart, ChevronDown, User, ShieldCheck } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { useUserRole } from "@/hooks/useUserRole";
 import rdmLogo from "@/assets/rdm-digital-nexus-logo.png";
 
 type NavChild = { label: string; path: string; preview: string };
@@ -69,6 +70,7 @@ const NavBar = () => {
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
   const { user } = useAuth();
+  const { isAdmin } = useUserRole();
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 60);
@@ -176,6 +178,15 @@ const NavBar = () => {
                 <User className="h-3.5 w-3.5" />
                 {user ? "Cuenta" : "Entrar"}
               </Link>
+              {isAdmin && (
+                <Link
+                  to="/admin"
+                  className="flex items-center gap-1.5 rounded-full border border-emerald-300/30 bg-emerald-300/10 px-3.5 py-2 text-[11px] tracking-[0.16em] uppercase text-emerald-200 transition-all hover:bg-emerald-300/20"
+                >
+                  <ShieldCheck className="h-3.5 w-3.5" />
+                  Admin
+                </Link>
+              )}
               <Link
                 to="/donar"
                 className="flex items-center gap-1.5 rounded-full border border-amber-300/35 bg-amber-300/10 px-4 py-2 text-[11px] tracking-[0.16em] uppercase text-amber-200 transition-all hover:bg-amber-300/20"

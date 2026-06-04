@@ -40,6 +40,7 @@ const Perfil = lazy(() => import("./pages/Perfil"));
 const Membresias = lazy(() => import("./pages/Membresias"));
 const FAQ = lazy(() => import("./pages/FAQ"));
 const Ajustes = lazy(() => import("./pages/Ajustes"));
+const Admin = lazy(() => import("./pages/Admin"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
@@ -92,6 +93,7 @@ const AnimatedRoutes = () => {
           <Route path="/membresias" element={<Membresias />} />
           <Route path="/faq" element={<FAQ />} />
           <Route path="/ajustes" element={<Ajustes />} />
+          <Route path="/admin" element={<Admin />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>
