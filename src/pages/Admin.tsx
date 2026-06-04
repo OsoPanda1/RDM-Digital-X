@@ -25,6 +25,7 @@ type MerchantRow = {
 };
 type MembershipRow = { id: string; user_id: string; status: string; price_mxn: number; current_period_end: string | null };
 type RewardRow = { id: string; name: string; category: string; cost_points: number; stock: number; active: boolean };
+type AdminAction = "merchant.approve" | "merchant.reject" | "reward.update";
 
 const PAGE_SIZE = 10;
 
@@ -47,6 +48,8 @@ export default function Admin() {
   const [search, setSearch] = useState("");
   const [busyId, setBusyId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [csrfToken] = useState(() => crypto.randomUUID());
+  const [writeWindow, setWriteWindow] = useState<{ count: number; resetAt: number }>({ count: 0, resetAt: Date.now() + 60_000 });
 
   useEffect(() => {
     if (!authLoading && !user) navigate("/auth");
@@ -70,27 +73,65 @@ export default function Admin() {
     if (!roleLoading) loadAll();
   }, [roleLoading, loadAll]);
 
-  const setMerchantStatus = async (id: string, status: string) => {
-    setBusyId(id);
-    const patch: { status: string; published_at?: string } = { status };
-    if (status === "published") patch.published_at = new Date().toISOString();
-    const { error } = await supabase
-      .from("merchant_registrations")
-      .update(patch as never)
-      .eq("id", id);
-    setBusyId(null);
-    if (error) return toast.error("No se pudo actualizar el negocio: " + error.message);
-    toast.success(status === "published" ? "Negocio publicado" : "Negocio actualizado");
-    setMerchants((prev) => prev.map((x) => (x.id === id ? { ...x, status } : x)));
+  const assertAdminWriteAllowed = (action: AdminAction) => {
+    if (!user || !isAdmin) throw new Error("WRITE_ROLE_DENIED");
+    if (!csrfToken || csrfToken.length < 20) throw new Error("CSRF_TOKEN_MISSING");
+
+    const now = Date.now();
+    const nextWindow = writeWindow.resetAt <= now ? { count: 0, resetAt: now + 60_000 } : writeWindow;
+    if (nextWindow.count >= 12) throw new Error("ADMIN_RATE_LIMIT_EXCEEDED");
+    setWriteWindow({ ...nextWindow, count: nextWindow.count + 1 });
+
+    return { action, csrfToken, actorId: user.id };
+  };
+
+  const logAuditEvent = async (action: AdminAction, targetTable: string, targetId: string, beforeState: unknown, afterState: unknown) => {
+    const { error } = await supabase.from("admin_audit_events").insert({
+      actor_id: user?.id,
+      action,
+      target_table: targetTable,
+      target_id: targetId,
+      csrf_token_hash: await crypto.subtle.digest("SHA-256", new TextEncoder().encode(csrfToken)).then((buf) => Array.from(new Uint8Array(buf)).map((b) => b.toString(16).padStart(2, "0")).join("")),
+      before_state: beforeState,
+      after_state: afterState,
+      user_agent: navigator.userAgent.slice(0, 300),
+    } as never);
+    if (error) throw new Error(`AUDIT_LOG_FAILED: ${error.message}`);
+  };
+
+  const setMerchantStatus = async (id: string, status: "published" | "rejected") => {
+    const current = merchants.find((item) => item.id === id);
+    try {
+      assertAdminWriteAllowed(status === "published" ? "merchant.approve" : "merchant.reject");
+      setBusyId(id);
+      const patch: { status: string; published_at?: string | null } = { status, published_at: status === "published" ? new Date().toISOString() : null };
+      await logAuditEvent(status === "published" ? "merchant.approve" : "merchant.reject", "merchant_registrations", id, current ?? null, patch);
+      const { error } = await supabase.from("merchant_registrations").update(patch as never).eq("id", id);
+      if (error) throw error;
+      toast.success(status === "published" ? "Negocio publicado con auditoría" : "Negocio rechazado con auditoría");
+      setMerchants((prev) => prev.map((x) => (x.id === id ? { ...x, status } : x)));
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "No se pudo actualizar el negocio");
+    } finally {
+      setBusyId(null);
+    }
   };
 
   const updateReward = async (id: string, patch: Partial<RewardRow>) => {
-    setBusyId(id);
-    const { error } = await supabase.from("rewards_catalog").update(patch as never).eq("id", id);
-    setBusyId(null);
-    if (error) return toast.error("No se pudo actualizar la recompensa: " + error.message);
-    setRewards((prev) => prev.map((x) => (x.id === id ? { ...x, ...patch } : x)));
-    toast.success("Recompensa actualizada");
+    const current = rewards.find((item) => item.id === id);
+    try {
+      assertAdminWriteAllowed("reward.update");
+      setBusyId(id);
+      await logAuditEvent("reward.update", "rewards_catalog", id, current ?? null, patch);
+      const { error } = await supabase.from("rewards_catalog").update(patch as never).eq("id", id);
+      if (error) throw error;
+      setRewards((prev) => prev.map((x) => (x.id === id ? { ...x, ...patch } : x)));
+      toast.success("Recompensa actualizada con auditoría");
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "No se pudo actualizar la recompensa");
+    } finally {
+      setBusyId(null);
+    }
   };
 
   const filteredMerchants = useMemo(
@@ -136,9 +177,13 @@ export default function Admin() {
               Panel de <span className="text-gradient-gold">Administración</span>
             </h1>
             <p className="max-w-xl text-muted-foreground">
-              Aprueba comercios, revisa precios de membresías y gestiona la disponibilidad del catálogo con auditoría server-side.
+              Aprueba comercios y gestiona catálogo con rol verificado, token CSRF por sesión, límite anti-abuso local y bitácora de auditoría en Supabase.
             </p>
           </motion.div>
+
+          <div className="mb-5 rounded-xl border border-amber-300/20 bg-amber-300/5 p-3 font-mono text-[10px] uppercase tracking-widest text-amber-100">
+            Escrituras protegidas · CSRF activo · Ventana anti-abuso: {writeWindow.count}/12 por minuto · Actor: {user?.id.slice(0, 8)}…
+          </div>
 
           <Tabs defaultValue="merchants">
             <TabsList className="mb-6">

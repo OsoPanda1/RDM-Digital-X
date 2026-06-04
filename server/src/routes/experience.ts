@@ -6,6 +6,8 @@ import { Router } from "express";
 import { z } from "zod";
 import { optimizeRoute } from "../experience/geneticOptimizer.js";
 import { buildTwinsContext, getTwinById, getTwinsByType } from "../experience/twinContextBuilder.js";
+import { buildPlanoIMapCatalog } from "../data/plano-i-atlas.js";
+import { normalizePagination, paginate } from "../services/paginated-content.js";
 import type { UserPreferences } from "../experience/types.js";
 import { config } from "../config.js";
 import { createRateLimiter } from "../middleware/rateLimit.js";
@@ -14,6 +16,16 @@ import { sendError } from "../middleware/http.js";
 const experienceRouter = Router();
 
 experienceRouter.use("/plan", createRateLimiter(config.rateLimitMaxRequests, config.rateLimitWindowMs));
+
+const mapCatalogQuerySchema = z.object({
+  page: z.coerce.number().int().positive().optional(),
+  pageSize: z.coerce.number().int().positive().max(60).optional(),
+  q: z.string().trim().max(120).optional(),
+  category: z.enum(["place", "merchant"]).optional(),
+  placeType: z.string().trim().max(40).optional(),
+  topic: z.enum(["history", "myths", "gastronomy", "routes"]).optional(),
+  openOnly: z.coerce.boolean().optional(),
+});
 
 const planSchema = z.object({
   availableMinutes: z.number().int().min(30).max(720).optional().default(180),
@@ -50,6 +62,40 @@ experienceRouter.post("/plan", async (req, res, next) => {
   } catch (err) {
     next(err);
   }
+});
+
+
+// GET /api/experience/map-catalog — Plano I map nodes with atlas/twin catalog windows
+experienceRouter.get("/map-catalog", (req, res) => {
+  const parsed = mapCatalogQuerySchema.safeParse(req.query);
+  if (!parsed.success) {
+    return sendError(res, 400, "VALIDATION_ERROR", "Invalid map catalog query", parsed.error.flatten());
+  }
+
+  const { page, pageSize, q } = normalizePagination(parsed.data, 60);
+  const typeFilter = parsed.data.placeType?.toUpperCase();
+  const query = q.toLowerCase();
+
+  const nodes = buildPlanoIMapCatalog().filter((node) => {
+    if (parsed.data.category && node.category !== parsed.data.category) return false;
+    if (typeFilter && node.placeType !== typeFilter) return false;
+    if (parsed.data.topic && !node.atlasTopics.includes(parsed.data.topic)) return false;
+    if (parsed.data.openOnly && node.telemetry.openStatus === false) return false;
+    if (!query) return true;
+    return [
+      node.name,
+      node.description,
+      node.placeType,
+      node.category,
+      ...(node.tags ?? []),
+      ...node.atlasItems.flatMap((item) => [item.title, item.summary, item.topic]),
+    ]
+      .join(" ")
+      .toLowerCase()
+      .includes(query);
+  });
+
+  return res.json({ filters: parsed.data, ...paginate(nodes, page, pageSize) });
 });
 
 // GET /api/experience/twins — All twins with telemetry
