@@ -39,6 +39,17 @@ const RealitoOrb = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  useEffect(() => {
+    const onOpen = (e: Event) => {
+      setIsOpen(true);
+      const detail = (e as CustomEvent<{ question?: string }>).detail;
+      const q = detail?.question?.trim();
+      if (q) setInput(q);
+    };
+    window.addEventListener("rdm:realito-open", onOpen as EventListener);
+    return () => window.removeEventListener("rdm:realito-open", onOpen as EventListener);
+  }, []);
+
   const handleSend = async (text?: string) => {
     const payload = text ?? input.trim();
     if (!payload) return;
