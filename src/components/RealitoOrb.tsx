@@ -3,6 +3,7 @@ import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useRealitoChat, type SuggestedAction } from "@/hooks/useRealitoChat";
 import ReactMarkdown from "react-markdown";
+import rdmBadge from "@/assets/rdm-logo-badge.png";
 
 const orbVariants = {
   idle: {
