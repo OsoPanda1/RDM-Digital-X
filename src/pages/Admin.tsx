@@ -72,9 +72,12 @@ export default function Admin() {
 
   const setMerchantStatus = async (id: string, status: string) => {
     setBusyId(id);
-    const patch: Record<string, unknown> = { status };
+    const patch: { status: string; published_at?: string } = { status };
     if (status === "published") patch.published_at = new Date().toISOString();
-    const { error } = await supabase.from("merchant_registrations").update(patch).eq("id", id);
+    const { error } = await supabase
+      .from("merchant_registrations")
+      .update(patch as never)
+      .eq("id", id);
     setBusyId(null);
     if (error) return toast.error("No se pudo actualizar el negocio: " + error.message);
     toast.success(status === "published" ? "Negocio publicado" : "Negocio actualizado");
