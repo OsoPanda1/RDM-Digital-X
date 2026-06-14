@@ -7,9 +7,9 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// =====================
-// GEMELOS DIGITALES
-// =====================
+// =====================================================
+// GEMELOS DIGITALES · TELEMETRÍA & OBSERVABILIDAD
+// =====================================================
 
 model DigitalTwin {
   id          String     @id @default(cuid())
@@ -18,15 +18,22 @@ model DigitalTwin {
   sourceId    String
   status      TwinStatus @default(ACTIVE)
 
+  /// Telemetría cruda (sensores, eventos, latencias, métricas de salud)
   telemetry   Json       @default("{}")
+  /// Propiedades “lentas”: configuración, capacidades declaradas, límites
   properties  Json       @default("{}")
+  /// Metadata extendida: etiquetas, versión de modelo, checksums, etc.
   metadata    Json       @default("{}")
+
+  /// Huella para futuros esquemas híbridos pre/post‑cuántum (ej. hash en MSR)
+  quantumFingerprint String? @db.VarChar(255)
 
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
 
   @@unique([sourceId, modelType])
   @@index([modelType, status])
+  @@index([status, updatedAt])
 }
 
 enum TwinType {
@@ -43,9 +50,9 @@ enum TwinStatus {
   MAINTENANCE
 }
 
-// =====================
+// =====================================================
 // ENTIDADES TURÍSTICAS
-// =====================
+// =====================================================
 
 model Place {
   id          String    @id @default(cuid())
@@ -146,9 +153,9 @@ model Saying {
   origin      String?
 }
 
-// =====================
+// =====================================================
 // USUARIOS Y COMERCIO
-// =====================
+// =====================================================
 
 enum Role {
   VISITOR
@@ -163,41 +170,97 @@ model User {
   role         Role          @default(VISITOR)
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
+
   donations    Donation[]
   interactions Interaction[]
+  aiLogs       AiInteractionLog[]
 }
 
 model Donation {
   id         String   @id @default(cuid())
   userId     String?
   user       User?    @relation(fields: [userId], references: [id])
+
   amount     Int
   currency   String   @default("mxn")
   provider   String   @default("stripe")
   providerId String
+
+  /// requestId que generas en la ruta /donations (para trazabilidad completa)
+  requestId  String?  @db.VarChar(100)
+
+  /// Hash o ID externo (p.ej. ancla en MSR Blockchain / Evidence Chain)
+  ledgerAnchor String? @db.VarChar(255)
+
+  /// Metadatos para telemetría / observabilidad (IP, UA, tags, etc.)
+  telemetry  Json     @default("{}")
+
   createdAt  DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([provider, providerId])
+  @@index([userId, createdAt])
 }
 
 model Interaction {
   id         String   @id @default(cuid())
   userId     String?
   user       User?    @relation(fields: [userId], references: [id])
+
   kind       String
   businessId String?
   context    String?
   createdAt  DateTime @default(now())
+
+  @@index([userId, kind, createdAt])
 }
+
+// =====================================================
+// IA / REALITO · TELEMETRÍA COGNITIVA
+// =====================================================
 
 model AiInteractionLog {
   id          String   @id @default(cuid())
   userId      String
-  channel     String
-  sourceModel String
+  channel     String         // web, whatsapp, kiosk, etc.
+  sourceModel String         // modelo de IA
   prompt      String   @db.Text
   response    String   @db.Text
   latencyMs   Int
   createdAt   DateTime @default(now())
 
+  /// IP, UA, geolocalización aproximada, flags de moderación, etc.
+  metadata    Json     @default("{}")
+
+  /// Perfil de seguridad criptográfica de la sesión (pre/híbrido/post‑Q)
+  cryptoProfile String? @db.VarChar(50)
+
   @@index([createdAt])
   @@index([userId, channel])
+}
+
+// =====================================================
+// ARCHIVO SONORO DIGITAL · MÚSICA
+// =====================================================
+
+model MusicTrack {
+  id          String   @id @default(uuid())
+  title       String
+  artist      String
+  description String?
+
+  coverUrl    String
+  audioUrl    String
+
+  active      Boolean  @default(true)
+
+  // Para métricas de uso por pista
+  playCount   Int      @default(0)
+  lastPlayedAt DateTime?
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([active, createdAt])
+  @@index([artist, active])
 }
