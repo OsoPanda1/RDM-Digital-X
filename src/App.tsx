@@ -1,3 +1,4 @@
+// src/App.tsx
 import { useState, useCallback, lazy, Suspense } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
@@ -8,6 +9,11 @@ import { AnimatePresence } from "framer-motion";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import CinematicIntro from "@/components/CinematicIntro";
 
+// Música global
+import { MusicProvider } from "./music/MusicProvider";
+import { FloatingPlayer } from "./music/FloatingPlayer";
+
+// Páginas (lazy)
 const Index = lazy(() => import("./pages/Index"));
 const Historia = lazy(() => import("./pages/Historia"));
 const Cultura = lazy(() => import("./pages/Cultura"));
@@ -43,14 +49,24 @@ const Ajustes = lazy(() => import("./pages/Ajustes"));
 const Admin = lazy(() => import("./pages/Admin"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
+// Nueva página de Archivo Sonoro
+const ArchivoSonoro = lazy(() => import("./pages/ArchivoSonoro"));
+
 const queryClient = new QueryClient();
 
 const LoadingFallback = () => (
   <div className="min-h-screen bg-background flex items-center justify-center">
     <div className="text-center">
-      <div className="w-8 h-8 rounded-full mx-auto mb-4 pulse-gold"
-        style={{ background: "radial-gradient(circle, hsl(43, 80%, 55%), hsl(43, 60%, 35%))" }} />
-      <span className="font-body text-[10px] tracking-[0.3em] uppercase text-muted-foreground">Cargando...</span>
+      <div
+        className="w-8 h-8 rounded-full mx-auto mb-4 pulse-gold"
+        style={{
+          background:
+            "radial-gradient(circle, hsl(43, 80%, 55%), hsl(43, 60%, 35%))",
+        }}
+      />
+      <span className="font-body text-[10px] tracking-[0.3em] uppercase text-muted-foreground">
+        Cargando...
+      </span>
     </div>
   </div>
 );
@@ -94,6 +110,10 @@ const AnimatedRoutes = () => {
           <Route path="/faq" element={<FAQ />} />
           <Route path="/ajustes" element={<Ajustes />} />
           <Route path="/admin" element={<Admin />} />
+
+          {/* Nueva ruta institucional para el Archivo Sonoro */}
+          <Route path="/archivo-sonoro" element={<ArchivoSonoro />} />
+
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>
@@ -124,7 +144,11 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          <AppInner />
+          <MusicProvider>
+            <AppInner />
+            {/* Reproductor global siempre visible, estilo Spotify */}
+            <FloatingPlayer />
+          </MusicProvider>
         </BrowserRouter>
       </ErrorBoundary>
     </TooltipProvider>
