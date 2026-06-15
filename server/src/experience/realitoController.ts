@@ -1,5 +1,5 @@
 // ================================================================
-// RDM Digital OS v1.1 — Realito AI Controller
+// RDM Digital OS v1.2 — Realito AI Controller Evolucionado
 // Orquestador Territorial Conversacional Federado (Isabella Villaseñor AI)
 // ================================================================
 
@@ -21,28 +21,36 @@ import type {
   RealitoChatResponse,
   PlannedRoute,
 } from "./types.js";
+import { decisionStore } from "../core/decision-store.js";
 
 // ================================================================
 // CONFIGURACIÓN DE NÚCLEO Y CONSTANTES
 // ================================================================
 
-const KERNEL_VERSION = "EOCT-RDM-X-3.6";
-const VISUAL_STYLE = "CRYSTAL_GLOW";
+const KERNEL_VERSION = "EOCT-RDM-X-4.0";
+const VISUAL_STYLE = "CRYSTAL_GLOW_PLUS";
+
+// ================================================================
+// MAPA DE INTENCIONES
+// ================================================================
 
 const INTENT_MAP: Record<RealitoIntent, RegExp> = {
-  ROUTES: /ruta|tour|recorrido|itinerario|micheladas|caminar|visitar|paseo/i,
+  ROUTES: /ruta|tour|recorrido|itinerario|caminar|visitar|paseo|micheladas/i,
   GASTRONOMY:
     /comer|restaurante|bares|paste|comida|barbacoa|gastronomía|hambre|café|bebida/i,
-  HISTORY:
-    /historia|mina|museo|patrimonio|antiguo|minería|1766|siglo/i,
-  ADVENTURE:
-    /aventura|sendero|naturaleza|ecoturismo|bosque|rappel|cuatrimoto/i,
+  HISTORY: /historia|mina|museo|patrimonio|minería|1766|siglo/i,
+  ADVENTURE: /aventura|sendero|naturaleza|ecoturismo|bosque|rappel|cuatrimoto/i,
   EVENTS: /evento|festival|fiesta|feria|celebraci/i,
-  CULTURE:
-    /cultura|arte|artesanía|platería|recorridos|leyenda|tradicion/i,
-  COMMUNITY:
-    /comunidad|foto|experiencia|compartir|reseña/i,
+  CULTURE: /cultura|arte|artesanía|platería|leyenda|tradicion/i,
+  COMMUNITY: /comunidad|foto|experiencia|compartir|reseña/i,
   HELP: /ayuda|instrucciones|como funcionas|que haces|quien eres/i,
+  PHOTOS: /foto|galería|imagen|recuerdo/i,
+  MUSIC: /música|canción|playlist|sonido/i,
+  DONATIONS: /donar|apoyar|contribuir|aportación/i,
+  REGISTER: /registro|crear cuenta|comercio|usuario/i,
+  GAMIFICATION: /juego|reto|misión|puntos|premio/i,
+  RULES: /reglamento|norma|condiciones/i,
+  AWARDS: /premio|ranking|lista|ganadores/i,
 };
 
 // ================================================================
@@ -159,7 +167,7 @@ async function handleGastronomyIntent(
   const names = foodTwins
     .slice(0, 3)
     .map((t) => {
-      const crowd = t.telemetry.crowdLevel ?? 0;
+      const crowd = (t.telemetry as any).crowdLevel ?? 0;
       const status =
         crowd > 0.7
           ? "🔴 Saturado"
@@ -358,6 +366,129 @@ function handleHelpIntent(): {
   };
 }
 
+// ==== nuevos handlers v4 ====
+
+function handlePhotosIntent() {
+  return {
+    reply:
+      "📸 La galería de fotos de RDM Digital reúne imágenes históricas y experiencias compartidas por visitantes.",
+    suggestedActions: [
+      {
+        label: "🖼️ Abrir galería",
+        action: "NAVIGATE",
+        payload: { path: "/fotos" },
+      },
+      {
+        label: "📤 Subir experiencia",
+        action: "UPLOAD_PHOTO",
+      },
+    ],
+  };
+}
+
+function handleMusicIntent() {
+  return {
+    reply:
+      "🎶 El Archivo Sonoro Digital de Real del Monte preserva música y paisajes sonoros vinculados a la historia minera y cultural.",
+    suggestedActions: [
+      {
+        label: "🎧 Abrir Archivo Sonoro",
+        action: "NAVIGATE",
+        payload: { path: "/archivo-sonoro" },
+      },
+      {
+        label: "🎤 Artistas locales",
+        action: "OPEN_CATEGORY",
+        payload: { category: "MUSIC" },
+      },
+    ],
+  };
+}
+
+function handleDonationsIntent() {
+  return {
+    reply:
+      "🤝 Puedes apoyar RDM Digital con donaciones que fortalecen la infraestructura y la preservación del patrimonio local.",
+    suggestedActions: [
+      {
+        label: "💳 Donar ahora",
+        action: "OPEN_PAYMENT",
+        payload: { type: "DONATION" },
+      },
+      {
+        label: "ℹ️ Saber más",
+        action: "NAVIGATE",
+        payload: { path: "/donar" },
+      },
+    ],
+  };
+}
+
+function handleRegisterIntent() {
+  return {
+    reply:
+      "📝 Regístrate como visitante o comercio para acceder a misiones, catálogo y panel de comunidad.",
+    suggestedActions: [
+      {
+        label: "👤 Registro de usuario",
+        action: "NAVIGATE",
+        payload: { path: "/auth" },
+      },
+      {
+        label: "🏪 Registro de comercio",
+        action: "NAVIGATE",
+        payload: { path: "/comercios/registro" },
+      },
+    ],
+  };
+}
+
+function handleGamificationIntent() {
+  return {
+    reply:
+      "🎮 La capa de gamificación te permite ganar puntos, completar misiones y recibir premios por explorar Real del Monte.",
+    suggestedActions: [
+      {
+        label: "🎯 Iniciar misión",
+        action: "START_GAME",
+      },
+      {
+        label: "🏆 Ver ranking",
+        action: "NAVIGATE",
+        payload: { path: "/membresias" },
+      },
+    ],
+  };
+}
+
+function handleRulesIntent() {
+  return {
+    reply:
+      "📜 Los reglamentos garantizan una experiencia justa y segura en la comunidad digital y en las dinámicas de gamificación.",
+    suggestedActions: [
+      {
+        label: "📖 Leer reglamento",
+        action: "NAVIGATE",
+        payload: { path: "/faq" },
+      },
+    ],
+  };
+}
+
+function handleAwardsIntent() {
+  return {
+    reply:
+      "🏅 Aquí encontrarás los listados de premios y reconocimientos obtenidos por visitantes y comercios.",
+    suggestedActions: [
+      {
+        label: "🏆 Ver premios",
+        action: "NAVIGATE",
+        payload: { path: "/membresias" },
+      },
+    ],
+  };
+}
+
 // ================================================================
 // ORQUESTADOR PRINCIPAL (HANDLER EXPRESS)
 // ================================================================
@@ -377,6 +508,8 @@ export const handleRealitoChat = async (req: Request, res: Response) => {
       .status(400)
       .json({ error: "Mensaje vacío: requerido por el Kernel." });
   }
+
+  const traceId = req.id ?? crypto.randomUUID();
 
   try {
     const userPreferences = body.userPreferences ?? {};
@@ -429,6 +562,48 @@ export const handleRealitoChat = async (req: Request, res: Response) => {
         suggestedActions = result.suggestedActions;
         break;
       }
+      case "PHOTOS": {
+        const result = handlePhotosIntent();
+        reply = result.reply;
+        suggestedActions = result.suggestedActions;
+        break;
+      }
+      case "MUSIC": {
+        const result = handleMusicIntent();
+        reply = result.reply;
+        suggestedActions = result.suggestedActions;
+        break;
+      }
+      case "DONATIONS": {
+        const result = handleDonationsIntent();
+        reply = result.reply;
+        suggestedActions = result.suggestedActions;
+        break;
+      }
+      case "REGISTER": {
+        const result = handleRegisterIntent();
+        reply = result.reply;
+        suggestedActions = result.suggestedActions;
+        break;
+      }
+      case "GAMIFICATION": {
+        const result = handleGamificationIntent();
+        reply = result.reply;
+        suggestedActions = result.suggestedActions;
+        break;
+      }
+      case "RULES": {
+        const result = handleRulesIntent();
+        reply = result.reply;
+        suggestedActions = result.suggestedActions;
+        break;
+      }
+      case "AWARDS": {
+        const result = handleAwardsIntent();
+        reply = result.reply;
+        suggestedActions = result.suggestedActions;
+        break;
+      }
       default: {
         const result = handleHelpIntent();
         reply = result.reply;
@@ -440,9 +615,26 @@ export const handleRealitoChat = async (req: Request, res: Response) => {
     const interactionId = crypto.randomUUID();
     db.interactions.set(interactionId, {
       id: interactionId,
-      kind: `realito_v3_${intent.toLowerCase()}`,
+      kind: `realito_v4_${intent.toLowerCase()}`,
       context: rawMessage.substring(0, 200),
       createdAt: new Date().toISOString(),
+    });
+
+    // Registro en Decision Store (telemetría cognitiva)
+    decisionStore.save({
+      traceId,
+      intent,
+      score: 0.9, // placeholder, luego lo puedes ligar a confidence real
+      territory: "Real del Monte",
+      metadata: {
+        interactionId,
+        kernel: KERNEL_VERSION,
+        twinNodes: twinsContext.length,
+      },
+      source: "realito-controller",
+      modelId: "realito-kernel-v4",
+      riskLevel: "low",
+      cryptoProfile: "hybrid-pq",
     });
 
     const response: RealitoChatResponse & {
