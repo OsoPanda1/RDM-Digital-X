@@ -58,7 +58,7 @@ const QuickLinksSection = () => (
             key={chapter.path}
             to={chapter.path}
             aria-label={`${chapter.label}: ${chapter.desc}`}
-            className={`group relative overflow-hidden rounded-2xl card-lift glass-surface grain ${chapter.span}`}
+            className={`group relative overflow-hidden rounded-2xl card-lift glass-surface ${chapter.span}`}
           >
             <div className="img-frame absolute inset-0">
               <img
@@ -69,7 +69,7 @@ const QuickLinksSection = () => (
               />
             </div>
 
-            <div className="relative z-10 h-full flex flex-col justify-end p-5 md:p-6">
+            <div className="relative z-20 h-full flex flex-col justify-end p-5 md:p-6 bg-gradient-to-t from-background/85 via-background/25 to-transparent">
               <div className="hairline w-10 mb-3 opacity-0 group-hover:opacity-100 group-hover:w-20 transition-all duration-700" />
               <h3
                 className={`font-display tracking-[-0.02em] text-foreground ${
