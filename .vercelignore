@@ -1,0 +1,15 @@
+server
+packages
+systemd
+tools/hw
+tools/deploy
+e2e
+docs
+observability
+*.log
+.env
+.env.local
+node_modules
+dist
+playwright-report
+test-results

@@ -8,7 +8,8 @@ type SignInOptions = {
 };
 
 async function fallbackSupabaseOAuth(provider: "google" | "apple" | "microsoft" | "lovable", opts?: SignInOptions) {
-  const supabaseProvider = provider === "lovable" ? "google" : provider;
+  const supabaseProvider = provider === "lovable" ? "google" : provider === "microsoft" ? "azure" : provider;
+
   return supabase.auth.signInWithOAuth({
     provider: supabaseProvider,
     options: {
