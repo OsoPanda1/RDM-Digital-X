@@ -9,7 +9,7 @@
    Nada de colores crudos fuera de las mezclas atmosféricas.
    ============================================================================ */
 
-@layer utilities {
+/* --- utilidades RDM (capa posterior a Tailwind, cargada desde main.tsx) --- */
   /* ------------------------------------------------------------------
      1 · SUPERFICIES · vidrio de dos capas con luz de canto
      ------------------------------------------------------------------ */
@@ -503,8 +503,6 @@
     color: hsl(var(--gold) / 0.2);
     font-variant-numeric: lining-nums tabular-nums;
   }
-}
-
 /* ------------------------------------------------------------------
    9 · ACCESIBILIDAD · el movimiento nunca es obligatorio
    ------------------------------------------------------------------ */
