@@ -84,17 +84,19 @@ export const Reveal = ({
   ...rest
 }: RevealProps) => {
   const { ref, revealed } = useReveal<HTMLDivElement>({ once });
+  const Component = Tag as React.ElementType;
 
   return (
-    <Tag
-      ref={ref as React.Ref<HTMLDivElement>}
+    <Component
+      ref={ref}
       className={`${VARIANT_CLASS[variant]} ${revealed ? "is-revealed" : ""} ${className}`.trim()}
       style={delay ? { transitionDelay: `${delay}ms`, ...style } : style}
       {...rest}
     >
       {children}
-    </Tag>
+    </Component>
   );
 };
+
 
 export default Reveal;
