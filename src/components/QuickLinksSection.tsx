@@ -69,7 +69,7 @@ const QuickLinksSection = () => (
               />
             </div>
 
-            <div className="relative z-20 h-full flex flex-col justify-end p-5 md:p-6 isolate bg-gradient-to-t from-background/85 via-background/25 to-transparent">
+            <div className="absolute inset-x-0 bottom-0 z-30 flex flex-col justify-end p-5 md:p-6 bg-gradient-to-t from-background/90 via-background/40 to-transparent">
               <div className="hairline w-10 mb-3 opacity-0 group-hover:opacity-100 group-hover:w-20 transition-all duration-700" />
               <h3
                 className={`font-display tracking-[-0.02em] text-foreground ${
