@@ -86,7 +86,7 @@ export default function Admin() {
   };
 
   const logAuditEvent = async (action: AdminAction, targetTable: string, targetId: string, beforeState: unknown, afterState: unknown) => {
-    const { error } = await supabase.from("admin_audit_events").insert({
+    const { error } = await (supabase as any).from("admin_audit_events").insert({
       actor_id: user?.id,
       action,
       target_table: targetTable,
