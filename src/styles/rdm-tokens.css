@@ -107,11 +107,27 @@ html.light {
   --gradient-premium: linear-gradient(135deg, hsl(220, 45%, 22%) 0%, hsl(205, 92%, 34%) 55%, hsl(36, 74%, 32%) 100%);
 }
 
+/* ---- Atmósfera de aplicación: la neblina cambia con el tema ---- */
+.app-atmosphere {
+  background-image:
+    radial-gradient(circle at 50% 0%, hsla(197, 100%, 45%, 0.12), transparent 35%),
+    radial-gradient(circle at 80% 20%, hsla(43, 100%, 60%, 0.08), transparent 28%),
+    linear-gradient(180deg, hsla(226, 35%, 8%, 0.95), hsla(220, 35%, 5%, 1));
+}
+
+html.light .app-atmosphere {
+  background-image:
+    radial-gradient(circle at 50% 0%, hsla(205, 90%, 40%, 0.09), transparent 34%),
+    radial-gradient(circle at 82% 16%, hsla(36, 80%, 45%, 0.1), transparent 28%),
+    linear-gradient(180deg, hsl(40, 34%, 98%) 0%, hsl(40, 28%, 95%) 100%);
+}
+
 html.light body {
   background-image:
     radial-gradient(circle at 12% 8%, hsla(205, 90%, 40%, 0.07), transparent 26%),
     radial-gradient(circle at 86% 4%, hsla(36, 80%, 45%, 0.08), transparent 22%);
 }
+
 
 html.light ::selection {
   background: hsla(36, 74%, 32%, 0.22);
