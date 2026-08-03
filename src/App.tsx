@@ -143,19 +143,21 @@ const AppInner = () => {
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <ErrorBoundary>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <MusicProvider>
-            <AppInner />
-            {/* Reproductor global siempre visible, estilo Spotify */}
-            <FloatingPlayer />
-          </MusicProvider>
-        </BrowserRouter>
-      </ErrorBoundary>
-    </TooltipProvider>
+    <ThemeProvider>
+      <TooltipProvider>
+        <ErrorBoundary>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <MusicProvider>
+              <AppInner />
+              {/* Reproductor global siempre visible, estilo Spotify */}
+              <FloatingPlayer />
+            </MusicProvider>
+          </BrowserRouter>
+        </ErrorBoundary>
+      </TooltipProvider>
+    </ThemeProvider>
   </QueryClientProvider>
 );
 
