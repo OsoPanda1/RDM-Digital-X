@@ -60,6 +60,7 @@ const PLANOS: Plano[] = [
       { label: "System Tenochtitlán", path: "/tenochtitlan", preview: "Kernel" },
       { label: "Operativo", path: "/operativo", preview: "Backend" },
       { label: "Evolución", path: "/evolucion", preview: "Roadmap" },
+      { label: "Guía de Estilo", path: "/style-guide", preview: "Design System" },
       { label: "Quiénes Somos", path: "/quienes-somos", preview: "Equipo" },
     ],
   },
