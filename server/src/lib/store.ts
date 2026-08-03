@@ -48,10 +48,10 @@ export interface TwinRecord {
   state: {
     desired: Record<string, string | number | boolean>;
     reported: Record<string, string | number | boolean>;
-    telemetry: Record<string, number>;
+    telemetry: Record<string, number> & { occupancy: number; avgStayMinutes: number; queueMinutes: number };
   };
   scene: {
-    renderer: "webgl" | "webxr";
+    renderer: "webgl" | "webxr" | "webgpu";
     stylePreset: "heritage" | "festival" | "nature";
     pbr: boolean;
     hdri: string;
@@ -82,6 +82,8 @@ export interface InteractionRecord {
   kind: string;
   context?: string;
   businessId?: string;
+  status?: string;
+  meta?: Record<string, unknown>;
   createdAt: string;
 }
 

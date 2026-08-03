@@ -1,5 +1,7 @@
-import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import { ArrowUpRight } from "lucide-react";
+import { Reveal } from "@/components/Reveal";
+import SectionHeader from "@/components/SectionHeader";
 import historiaImg from "@/assets/historia-hero.jpg";
 import gastronomiaImg from "@/assets/gastronomia-hero.jpg";
 import rutasImg from "@/assets/hero-rdm.jpg";
@@ -9,59 +11,85 @@ import mitosImg from "@/assets/relatos-hero.jpg";
 import arteImg from "@/assets/arte-hero.jpg";
 import comunidadImg from "@/assets/cultura-hero.jpg";
 
-const quickLinks = [
-  { label: "Historia", path: "/historia", icon: "📜", desc: "Cinco siglos de herencia minera", image: historiaImg },
-  { label: "Gastronomía", path: "/gastronomia", icon: "🥟", desc: "Del paste al mole hidalguense", image: gastronomiaImg },
-  { label: "Rutas", path: "/rutas", icon: "🗺️", desc: "9 recorridos temáticos", image: rutasImg },
-  { label: "Eventos", path: "/eventos", icon: "🎪", desc: "Festivales y fiestas locales", image: eventosImg },
-  { label: "Ecoturismo", path: "/ecoturismo", icon: "🌲", desc: "Bosques, cascadas y aventura", image: ecoturismoImg },
-  { label: "Mitos", path: "/relatos", icon: "👻", desc: "Leyendas y relatos oscuros", image: mitosImg },
-  { label: "Arte", path: "/arte", icon: "💎", desc: "Platería y artesanía local", image: arteImg },
-  { label: "Comunidad", path: "/comunidad", icon: "🌍", desc: "Muro global de viajeros", image: comunidadImg },
+/**
+ * Mosaico editorial de acceso a los capítulos del territorio.
+ * Dos piezas dominantes (Historia y Gastronomía) sostienen la retícula;
+ * el resto respira alrededor. La jerarquía se lee antes que el texto.
+ */
+const chapters = [
+  {
+    label: "Historia",
+    path: "/historia",
+    desc: "Cinco siglos de herencia minera cornish",
+    image: historiaImg,
+    span: "mosaic-wide mosaic-tall",
+    feature: true,
+  },
+  {
+    label: "Gastronomía",
+    path: "/gastronomia",
+    desc: "Del paste original al mole hidalguense",
+    image: gastronomiaImg,
+    span: "mosaic-wide",
+    feature: true,
+  },
+  { label: "Rutas", path: "/rutas", desc: "9 recorridos temáticos", image: rutasImg, span: "" },
+  { label: "Eventos", path: "/eventos", desc: "Fiestas y festivales vivos", image: eventosImg, span: "" },
+  { label: "Ecoturismo", path: "/ecoturismo", desc: "Bosque, cascadas y niebla", image: ecoturismoImg, span: "" },
+  { label: "Mitos", path: "/relatos", desc: "Leyendas de socavón", image: mitosImg, span: "" },
+  { label: "Arte", path: "/arte", desc: "Platería y oficio local", image: arteImg, span: "mosaic-wide" },
+  { label: "Comunidad", path: "/comunidad", desc: "Muro global de viajeros", image: comunidadImg, span: "mosaic-wide" },
 ];
 
 const QuickLinksSection = () => (
-  <section className="py-24">
+  <section className="relative py-28">
     <div className="container mx-auto px-6">
-      <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mb-12">
-        <span className="font-mono text-xs uppercase tracking-widest text-primary mb-3 block">Navega el Pueblo Mágico</span>
-        <h2 className="text-4xl md:text-5xl font-bold tracking-tighter uppercase">
-          Explora <span className="text-gradient-cyan">Todo</span>
-        </h2>
-        <p className="mt-4 max-w-2xl text-sm text-muted-foreground">
-          Fotografías reales de Real del Monte para descubrir rutas, sabores y experiencias del pueblo.
-        </p>
-      </motion.div>
+      <SectionHeader
+        index="02"
+        label="Navega el Pueblo Mágico"
+        title="Los capítulos del territorio"
+        subtitle="Ocho entradas al mismo lugar. Cada una abre una forma distinta de recorrer Real del Monte."
+        align="left"
+      />
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {quickLinks.map((link, i) => (
-          <Link key={link.path} to={link.path}>
-            <motion.article
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.05 }}
-              whileHover={{ y: -4 }}
-              className="glass-surface overflow-hidden group cursor-pointer hover:glow-cyan transition-all duration-500 h-full"
-            >
-              <div className="relative h-32 overflow-hidden">
-                <img
-                  src={link.image}
-                  alt={`Fotografía de ${link.label} en Real del Monte`}
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                  loading="lazy"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-card via-card/20 to-transparent" />
-                <span className="absolute top-3 left-3 text-2xl">{link.icon}</span>
-              </div>
-              <div className="p-4 text-center">
-                <h3 className="text-sm font-semibold tracking-tight mb-1">{link.label}</h3>
-                <p className="text-[11px] text-muted-foreground">{link.desc}</p>
-              </div>
-            </motion.article>
+      <Reveal variant="stagger" className="mosaic">
+        {chapters.map((chapter) => (
+          <Link
+            key={chapter.path}
+            to={chapter.path}
+            aria-label={`${chapter.label}: ${chapter.desc}`}
+            className={`group relative overflow-hidden rounded-2xl card-lift border border-[hsl(var(--gold))]/15 ${chapter.span}`}
+          >
+            <div className="img-frame absolute inset-0">
+              <img
+                src={chapter.image}
+                alt={`${chapter.label} en Real del Monte`}
+                className="w-full h-full object-cover opacity-70 group-hover:opacity-90 transition-opacity duration-700"
+                loading="lazy"
+              />
+            </div>
+
+            <div className="absolute inset-x-0 bottom-0 z-30 flex flex-col justify-end p-5 md:p-6 bg-gradient-to-t from-background/90 via-background/40 to-transparent">
+              <div className="hairline w-10 mb-3 opacity-0 group-hover:opacity-100 group-hover:w-20 transition-all duration-700" />
+              <h3
+                className={`font-display tracking-[-0.02em] text-foreground ${
+                  chapter.feature ? "text-3xl md:text-4xl" : "text-2xl"
+                }`}
+              >
+                {chapter.label}
+              </h3>
+              <p className="font-body text-[11px] md:text-xs text-[hsl(var(--platinum))]/60 mt-1 leading-relaxed max-w-[26ch]">
+                {chapter.desc}
+              </p>
+            </div>
+
+            <ArrowUpRight
+              className="absolute top-5 right-5 z-10 h-4 w-4 text-[hsl(var(--gold))]/0 group-hover:text-[hsl(var(--gold))]/85 -translate-y-1 group-hover:translate-y-0 transition-all duration-500"
+              aria-hidden="true"
+            />
           </Link>
         ))}
-      </div>
+      </Reveal>
     </div>
   </section>
 );

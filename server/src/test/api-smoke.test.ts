@@ -1,15 +1,21 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { startServer } from "../index.js";
+import type { startServer as startServerType } from "../index.js";
+
+process.env.NODE_ENV = "test";
+process.env.JWT_SECRET = "test-secret-with-at-least-32-characters";
+process.env.DATABASE_URL = "postgresql://user:password@localhost:5432/rdmx_test";
+process.env.PUBLIC_BASE_URL = "http://localhost:5173";
+process.env.CORS_ALLOWED_ORIGINS = "http://localhost:5173";
 
 const TEST_PORT = 8899;
 const base = `http://127.0.0.1:${TEST_PORT}`;
 
-let server: ReturnType<typeof startServer> | null = null;
+let server: ReturnType<typeof startServerType> | null = null;
 let token = "";
 
 test.before(async () => {
-  process.env.NODE_ENV = "test";
+  const { startServer } = await import("../index.js");
   server = startServer(TEST_PORT);
 });
 
@@ -53,7 +59,7 @@ test("realito + content + digital twins endpoints", async () => {
   const realitoRes = await fetch(`${base}/api/realito/chat`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ history: [{ role: "user", content: "quiero comer pastes" }] }),
+    body: JSON.stringify({ message: "quiero comer pastes" }),
   });
   assert.equal(realitoRes.status, 200);
 

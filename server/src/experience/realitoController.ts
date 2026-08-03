@@ -1,6 +1,6 @@
 // ================================================================
-// RDM Digital OS v1.0 — Realito AI Controller
-// Orquestador Territorial Conversacional Federado
+// RDM Digital OS v1.2 — Realito AI Controller Evolucionado
+// Orquestador Territorial Conversacional Federado (Isabella Villaseñor AI)
 // ================================================================
 
 import type { Request, Response } from "express";
@@ -21,28 +21,36 @@ import type {
   RealitoChatResponse,
   PlannedRoute,
 } from "./types.js";
+import { decisionStore } from "../core/decision-store.js";
 
 // ================================================================
 // CONFIGURACIÓN DE NÚCLEO Y CONSTANTES
 // ================================================================
 
-const KERNEL_VERSION = "EOCT-RDM-X-3.5";
-const VISUAL_STYLE = "CRYSTAL_GLOW";
+const KERNEL_VERSION = "EOCT-RDM-X-4.0";
+const VISUAL_STYLE = "CRYSTAL_GLOW_PLUS";
+
+// ================================================================
+// MAPA DE INTENCIONES
+// ================================================================
 
 const INTENT_MAP: Record<RealitoIntent, RegExp> = {
-  ROUTES: /ruta|tour|recorrido|itinerario|micheladas|caminar|visitar|paseo/i,
+  ROUTES: /ruta|tour|recorrido|itinerario|caminar|visitar|paseo|micheladas/i,
   GASTRONOMY:
     /comer|restaurante|bares|paste|comida|barbacoa|gastronomía|hambre|café|bebida/i,
-  HISTORY:
-    /historia|mina|museo|patrimonio|antiguo|minería|1766|siglo/i,
-  ADVENTURE:
-    /aventura|sendero|naturaleza|ecoturismo|bosque|rappel|cuatrimoto/i,
+  HISTORY: /historia|mina|museo|patrimonio|minería|1766|siglo/i,
+  ADVENTURE: /aventura|sendero|naturaleza|ecoturismo|bosque|rappel|cuatrimoto/i,
   EVENTS: /evento|festival|fiesta|feria|celebraci/i,
-  CULTURE:
-    /cultura|arte|artesanía|platería|recorridos|leyenda|tradicion/i,
-  COMMUNITY:
-    /comunidad|foto|experiencia|compartir|reseña/i,
+  CULTURE: /cultura|arte|artesanía|platería|leyenda|tradicion/i,
+  COMMUNITY: /comunidad|foto|experiencia|compartir|reseña/i,
   HELP: /ayuda|instrucciones|como funcionas|que haces|quien eres/i,
+  PHOTOS: /foto|galería|imagen|recuerdo/i,
+  MUSIC: /música|canción|playlist|sonido/i,
+  DONATIONS: /donar|apoyar|contribuir|aportación/i,
+  REGISTER: /registro|crear cuenta|comercio|usuario/i,
+  GAMIFICATION: /juego|reto|misión|puntos|premio/i,
+  RULES: /reglamento|norma|condiciones/i,
+  AWARDS: /premio|ranking|lista|ganadores/i,
 };
 
 // ================================================================
@@ -75,9 +83,8 @@ async function handleRoutesIntent(
   if (!route || route.stops.length === 0) {
     return {
       reply:
-        "El sistema de comunicación de algunos nodos parece estar fuera de línea, " +
-        "por lo que es complicado ofrecer datos en tiempo casi real.\n\n" +
-        "Por favor, especifica un punto de interés concreto o intenta de nuevo en unos minutos.",
+        "En este momento la telemetría de algunos nodos está inestable y no puedo garantizar una ruta confiable en tiempo casi real.\n\n" +
+        "Puedes decirme un punto de interés específico (por ejemplo: Mina de Acosta, Panteón Inglés, plaza) o intentar de nuevo en unos minutos.",
       suggestedActions: [
         {
           label: "🔁 Reintentar más tarde",
@@ -94,13 +101,13 @@ async function handleRoutesIntent(
 
   const reply =
     `He analizado ${twinsContext.length} sensores digitales del territorio y generé una ruta optimizada ` +
-    `con una confianza del ${confidence}%.\n\n` +
-    `**Ruta sugerida:** ${stopNames}\n` +
-    `**Métricas operativas:** Duración aproximada: ${route.objectives.totalDurationMinutes} min · ` +
+    `con una confianza del ${confidence}%. Tomé en cuenta afluencia, diversidad temática y balance comercio/cultura.\n\n` +
+    `Ruta sugerida: ${stopNames}\n` +
+    `Duración aproximada: ${route.objectives.totalDurationMinutes} min · ` +
     `Distancia estimada: ${route.objectives.distanceKm} km\n\n` +
-    `La IA ha aplicado ajustes por afluencia (${route.objectives.crowdPenalty}) ` +
-    `y ha maximizado la diversidad temática (${diversity}%) para equilibrar tu experiencia.\n\n` +
-    `¿Quieres ajustar esta ruta eliminando algún punto o prefieres modificar la duración total?`;
+    `Ajustes aplicados por saturación: ${route.objectives.crowdPenalty} · ` +
+    `Índice de diversidad temática: ${diversity}%.\n\n` +
+    `¿Quieres ajustar esta ruta eliminando algún punto, hacerla más corta o pedir una versión más gastronómica?`;
 
   return {
     reply,
@@ -141,10 +148,10 @@ async function handleGastronomyIntent(
 
   if (foodTwins.length === 0) {
     const reply =
-      "Históricamente, el paste es uno de los pilares gastronómicos de Real del Monte heredado por la comunidad inglesa, " +
-      "pero el platillo regional por excelencia son las enchiladas mineras.\n\n" +
-      "Te recomiendo iniciar en la plaza principal y caminar hacia las pasterías típicas. " +
-      "¿Buscas algo más específico como barbacoa, mariscos o se te antojan enchiladas mineras con un buen jarro de pulque?";
+      "El paste es uno de los pilares gastronómicos de Real del Monte heredado por la comunidad inglesa, " +
+      "y las enchiladas mineras son el platillo regional por excelencia.\n\n" +
+      "Te sugiero iniciar en la plaza principal y caminar hacia las pasterías típicas. " +
+      "Dime si buscas barbacoa, mariscos, pastes tradicionales o algo ligero con café y pan dulce.";
 
     return {
       reply,
@@ -160,22 +167,21 @@ async function handleGastronomyIntent(
   const names = foodTwins
     .slice(0, 3)
     .map((t) => {
-      const crowd = t.telemetry.crowdLevel ?? 0;
+      const crowd = (t.telemetry as any).crowdLevel ?? 0;
       const status =
         crowd > 0.7
           ? "🔴 Saturado"
           : crowd > 0.4
           ? "🟡 Moderado"
           : "🟢 Fluido";
-      return `**${t.name}** (${status})`;
+      return `${t.name} (${status})`;
     })
     .join(", ");
 
   const reply =
-    `Para una experiencia gastronómica óptima según la telemetría actual, te sugiero: ${names}.\n\n` +
-    `Real del Monte es reconocido como cuna del paste en México, una herencia córnica del siglo XIX ` +
-    `que sigue viva en sus comercios locales.\n\n` +
-    `¿Deseas que trace una ruta que conecte los puntos mejor valorados en calidad y servicio según otros visitantes?`;
+    `Según la telemetría actual y la experiencia de otros visitantes, te sugiero: ${names}.\n\n` +
+    `Real del Monte es reconocido como cuna del paste en México, herencia córnica del siglo XIX que sigue viva en sus comercios.\n\n` +
+    `¿Quieres que trace una ruta que conecte estos puntos optimizando caminata y tiempos de espera?`;
 
   return {
     reply,
@@ -208,19 +214,18 @@ function handleHistoryIntent(
   const placesInfo =
     historyTwins
       .slice(0, 3)
-      .map((t) => `**${t.name}**`)
-      .join(", ") ||
-    "Mina de Acosta, Panteón Inglés, Museo de Medicina Laboral, Museo del Paste";
+      .map((t) => `• ${t.name}`)
+      .join("\n") ||
+    "• Mina de Acosta\n• Panteón Inglés\n• Museo de Medicina Laboral\n• Museo del Paste";
 
   const reply =
-    `Real del Monte concentra varios siglos de narrativa minera.\n` +
+    `Real del Monte concentra siglos de narrativa minera.\n` +
     `En 1766 se documenta una de las primeras huelgas obreras del continente, ` +
-    `un episodio poco difundido en la historiografía oficial.\n\n` +
-    `Nodos históricos destacados: ${placesInfo}.\n\n` +
-    `La Mina de Acosta permite descender al subsuelo y sentir en la piel la tradición minera, ` +
-    `mientras que el Panteón Inglés conserva tumbas orientadas hacia Inglaterra y una simbología única.\n\n` +
-    `En Real del Monte también se resguarda la primera máquina de rayos X que llegó a Latinoamérica.\n\n` +
-    `¿Te interesa que Realito genere una ruta del patrimonio minero?`;
+    `un episodio poco difundido pero clave para entender la relación entre minería y derechos laborales.\n\n` +
+    `Algunos nodos históricos relevantes:\n${placesInfo}\n\n` +
+    `La Mina de Acosta permite descender al subsuelo y sentir la tradición minera; ` +
+    `el Panteón Inglés conserva tumbas orientadas hacia Inglaterra y simbolismos singulares.\n\n` +
+    `¿Te gustaría una ruta centrada en patrimonio minero o prefieres un relato guiado con leyendas cortas?`;
 
   return {
     reply,
@@ -251,7 +256,7 @@ function handleAdventureIntent(): {
     `A más de 2,700 metros sobre el nivel del mar, el entorno de oyamel que rodea ` +
     `Real del Monte ofrece condiciones ideales para turismo de aventura.\n\n` +
     `La Peña del Zumate y el bosque del Hiloche son puntos clave para senderismo, rappel y rutas de alta intensidad.\n\n` +
-    `¿Cuál es tu nivel de experiencia y cuánto tiempo planeas dedicar a la montaña hoy?`;
+    `Cuéntame tu nivel de experiencia (principiante, intermedio, avanzado) y el tiempo que tienes hoy para ajustar la dificultad.`;
 
   return {
     reply,
@@ -279,12 +284,11 @@ function handleEventsIntent(): {
   suggestedActions: SuggestedAction[];
 } {
   const reply =
-    `El calendario cultural de Real del Monte incluye:\n\n` +
+    `El calendario cultural de Real del Monte suele incluir:\n\n` +
     `🎉 Festival del Paste (octubre)\n` +
     `🎭 Festival de las Ánimas (noviembre)\n` +
-    `🎭 Feria Patronal Señor de Zelontla (enero)\n` +
-    `⛏️ Feria de la Plata (julio)\n\n` +
-    `¿Deseas consultar la agenda sincronizada o planear tu visita en torno a alguno de estos eventos?`;
+    `🎡 Fiestas patronales locales en distintos barrios\n\n` +
+    `¿Quieres que te muestre la agenda actualizada o que planifiquemos tu visita alrededor de una fecha específica?`;
 
   return {
     reply,
@@ -308,10 +312,10 @@ function handleCultureIntent(): {
 } {
   const reply =
     `La identidad de este territorio mezcla herencia minera, británica y serrana:\n\n` +
-    `💎 Platería de autor\n` +
+    `💎 Platería de autor y artesanías\n` +
     `🎨 Galerías y talleres de arte local\n` +
     `👻 Relatos del subsuelo y leyendas de aparecidos\n\n` +
-    `¿Qué vertiente cultural deseas explorar hoy: artesanías, arte o leyendas?`;
+    `¿Prefieres explorar artesanías, arte o leyendas primero?`;
 
   return {
     reply,
@@ -335,13 +339,13 @@ function handleHelpIntent(): {
   suggestedActions: SuggestedAction[];
 } {
   const reply =
-    `Soy Realito, el núcleo cognitivo conversacional de RDM Digital. ` +
-    `Mi función es optimizar tu experiencia en el territorio usando el gemelo digital.\n\n` +
-    `Capacidades actuales:\n` +
-    `🗺️ Rutas con IA (optimización genética y telemetría)\n` +
-    `🥟 Recomendaciones gastronómicas\n` +
-    `⛏️ Contexto histórico y cultural\n\n` +
-    `Puedes pedirme que te sugiera una ruta, dónde comer o que te cuente la historia local.`;
+    `Soy Realito, una instancia del núcleo cognitivo territorial diseñado por Isabella Villaseñor AI para RDM Digital.\n\n` +
+    `Uso el gemelo digital del pueblo, telemetría de afluencia y modelos de optimización para ayudarte a decidir qué hacer.\n\n` +
+    `Puedo:\n` +
+    `🗺️ Proponer rutas optimizadas (con algoritmo genético y datos en tiempo casi real)\n` +
+    `🥟 Recomendar lugares para comer según tu estilo\n` +
+    `⛏️ Contarte la historia minera y cultural de Real del Monte\n\n` +
+    `Dime, por ejemplo: "arma una ruta corta para caminar", "dónde comer pastes" o "cuéntame la historia de la mina".`;
 
   return {
     reply,
@@ -362,6 +366,129 @@ function handleHelpIntent(): {
   };
 }
 
+// ==== nuevos handlers v4 ====
+
+function handlePhotosIntent() {
+  return {
+    reply:
+      "📸 La galería de fotos de RDM Digital reúne imágenes históricas y experiencias compartidas por visitantes.",
+    suggestedActions: [
+      {
+        label: "🖼️ Abrir galería",
+        action: "NAVIGATE",
+        payload: { path: "/fotos" },
+      },
+      {
+        label: "📤 Subir experiencia",
+        action: "UPLOAD_PHOTO",
+      },
+    ],
+  };
+}
+
+function handleMusicIntent() {
+  return {
+    reply:
+      "🎶 El Archivo Sonoro Digital de Real del Monte preserva música y paisajes sonoros vinculados a la historia minera y cultural.",
+    suggestedActions: [
+      {
+        label: "🎧 Abrir Archivo Sonoro",
+        action: "NAVIGATE",
+        payload: { path: "/archivo-sonoro" },
+      },
+      {
+        label: "🎤 Artistas locales",
+        action: "OPEN_CATEGORY",
+        payload: { category: "MUSIC" },
+      },
+    ],
+  };
+}
+
+function handleDonationsIntent() {
+  return {
+    reply:
+      "🤝 Puedes apoyar RDM Digital con donaciones que fortalecen la infraestructura y la preservación del patrimonio local.",
+    suggestedActions: [
+      {
+        label: "💳 Donar ahora",
+        action: "OPEN_PAYMENT",
+        payload: { type: "DONATION" },
+      },
+      {
+        label: "ℹ️ Saber más",
+        action: "NAVIGATE",
+        payload: { path: "/donar" },
+      },
+    ],
+  };
+}
+
+function handleRegisterIntent() {
+  return {
+    reply:
+      "📝 Regístrate como visitante o comercio para acceder a misiones, catálogo y panel de comunidad.",
+    suggestedActions: [
+      {
+        label: "👤 Registro de usuario",
+        action: "NAVIGATE",
+        payload: { path: "/auth" },
+      },
+      {
+        label: "🏪 Registro de comercio",
+        action: "NAVIGATE",
+        payload: { path: "/comercios/registro" },
+      },
+    ],
+  };
+}
+
+function handleGamificationIntent() {
+  return {
+    reply:
+      "🎮 La capa de gamificación te permite ganar puntos, completar misiones y recibir premios por explorar Real del Monte.",
+    suggestedActions: [
+      {
+        label: "🎯 Iniciar misión",
+        action: "START_GAME",
+      },
+      {
+        label: "🏆 Ver ranking",
+        action: "NAVIGATE",
+        payload: { path: "/membresias" },
+      },
+    ],
+  };
+}
+
+function handleRulesIntent() {
+  return {
+    reply:
+      "📜 Los reglamentos garantizan una experiencia justa y segura en la comunidad digital y en las dinámicas de gamificación.",
+    suggestedActions: [
+      {
+        label: "📖 Leer reglamento",
+        action: "NAVIGATE",
+        payload: { path: "/faq" },
+      },
+    ],
+  };
+}
+
+function handleAwardsIntent() {
+  return {
+    reply:
+      "🏅 Aquí encontrarás los listados de premios y reconocimientos obtenidos por visitantes y comercios.",
+    suggestedActions: [
+      {
+        label: "🏆 Ver premios",
+        action: "NAVIGATE",
+        payload: { path: "/membresias" },
+      },
+    ],
+  };
+}
+
 // ================================================================
 // ORQUESTADOR PRINCIPAL (HANDLER EXPRESS)
 // ================================================================
@@ -372,6 +499,7 @@ export const handleRealitoChat = async (req: Request, res: Response) => {
     contextHistory?: ChatMessageDTO[];
     userPreferences?: UserPreferences;
     geo?: { lat: number; lng: number } | null;
+    userId?: string;
   };
 
   const rawMessage = body.message?.trim();
@@ -380,6 +508,8 @@ export const handleRealitoChat = async (req: Request, res: Response) => {
       .status(400)
       .json({ error: "Mensaje vacío: requerido por el Kernel." });
   }
+
+  const traceId = req.id ?? crypto.randomUUID();
 
   try {
     const userPreferences = body.userPreferences ?? {};
@@ -432,6 +562,48 @@ export const handleRealitoChat = async (req: Request, res: Response) => {
         suggestedActions = result.suggestedActions;
         break;
       }
+      case "PHOTOS": {
+        const result = handlePhotosIntent();
+        reply = result.reply;
+        suggestedActions = result.suggestedActions;
+        break;
+      }
+      case "MUSIC": {
+        const result = handleMusicIntent();
+        reply = result.reply;
+        suggestedActions = result.suggestedActions;
+        break;
+      }
+      case "DONATIONS": {
+        const result = handleDonationsIntent();
+        reply = result.reply;
+        suggestedActions = result.suggestedActions;
+        break;
+      }
+      case "REGISTER": {
+        const result = handleRegisterIntent();
+        reply = result.reply;
+        suggestedActions = result.suggestedActions;
+        break;
+      }
+      case "GAMIFICATION": {
+        const result = handleGamificationIntent();
+        reply = result.reply;
+        suggestedActions = result.suggestedActions;
+        break;
+      }
+      case "RULES": {
+        const result = handleRulesIntent();
+        reply = result.reply;
+        suggestedActions = result.suggestedActions;
+        break;
+      }
+      case "AWARDS": {
+        const result = handleAwardsIntent();
+        reply = result.reply;
+        suggestedActions = result.suggestedActions;
+        break;
+      }
       default: {
         const result = handleHelpIntent();
         reply = result.reply;
@@ -443,12 +615,31 @@ export const handleRealitoChat = async (req: Request, res: Response) => {
     const interactionId = crypto.randomUUID();
     db.interactions.set(interactionId, {
       id: interactionId,
-      kind: `realito_v3_${intent.toLowerCase()}`,
-      context: rawMessage.substring(0, 100),
+      kind: `realito_v4_${intent.toLowerCase()}`,
+      context: rawMessage.substring(0, 200),
       createdAt: new Date().toISOString(),
     });
 
-    const response: RealitoChatResponse = {
+    // Registro en Decision Store (telemetría cognitiva)
+    decisionStore.save({
+      traceId,
+      intent,
+      score: 0.9, // placeholder, luego lo puedes ligar a confidence real
+      territory: "Real del Monte",
+      metadata: {
+        interactionId,
+        kernel: KERNEL_VERSION,
+        twinNodes: twinsContext.length,
+      },
+      source: "realito-controller",
+      modelId: "realito-kernel-v4",
+      riskLevel: "low",
+      cryptoProfile: "hybrid-pq",
+    });
+
+    const response: RealitoChatResponse & {
+      persona?: { name: string; role: string };
+    } = {
       reply,
       intent,
       suggestedActions,
@@ -457,6 +648,10 @@ export const handleRealitoChat = async (req: Request, res: Response) => {
       visualStyle: VISUAL_STYLE,
       twinNodesQueried: twinsContext.length,
       interactionId,
+      persona: {
+        name: "Realito · Isabella Villaseñor AI",
+        role: "Orquestador territorial de experiencias en Real del Monte",
+      },
     };
 
     return res.json(response);

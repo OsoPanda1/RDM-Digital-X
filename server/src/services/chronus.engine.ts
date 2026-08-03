@@ -1,56 +1,132 @@
 // ============================================================================
-// RDM Digital OS — Chronus Engine
+// RDM Digital OS — Chronus Engine (v2)
 // Motor de cálculo de saturación zonal en tiempo real
-// From quantum-system-tamv integration
 // ============================================================================
 
+export type Clima = "despejado" | "lluvia" | "niebla_densa";
+
 export interface ContextoCivilizatorio {
-  clima: 'despejado' | 'lluvia' | 'niebla_densa';
+  clima: Clima;
   eventos_activos: string[];
   turistas_concurrentes: number;
 }
 
 export interface SaturationResult {
   polygonId: string;
-  presion: number;
+  presion: number; // 0.0–1.0
   alerta: boolean;
-  timestamp: string;
+  timestamp: string; // ISO-8601
 }
 
 /**
- * ChronusEngine calculates zonal saturation pressure in real-time
- * combining physical density, weather multipliers, event tensors,
- * and concurrency factors.
+ * Configuración del motor. Permite tunear sin tocar la lógica.
  */
+export interface ChronusConfig {
+  maxActivosPorZona: number;
+  maxTuristas: number;
+  umbralAlerta: number; // 0–1
+  climaMultipliers: Record<Clima, number>;
+  eventoBonus: number;
+  maxTensorConcurrencia: number; // 0–1
+  enableWarnings: boolean;
+}
+
+const DEFAULT_CHRONUS_CONFIG: ChronusConfig = {
+  maxActivosPorZona: 1_000,
+  maxTuristas: 10_000,
+  umbralAlerta: 0.85,
+  climaMultipliers: {
+    despejado: 1.0,
+    lluvia: 1.2,
+    niebla_densa: 1.4,
+  },
+  eventoBonus: 0.15,
+  maxTensorConcurrencia: 0.25,
+  enableWarnings: true,
+};
+
 export class ChronusEngine {
+  private readonly config: ChronusConfig;
+
+  constructor(config: Partial<ChronusConfig> = {}) {
+    this.config = { ...DEFAULT_CHRONUS_CONFIG, ...config };
+  }
+
   /**
-   * Calculate saturation for a given zone polygon
-   * Returns normalized pressure 0.0 - 1.0
+   * Normaliza y acota un valor numérico.
+   */
+  private clamp(value: number, min: number, max: number): number {
+    return Math.max(min, Math.min(max, value));
+  }
+
+  /**
+   * Calcula saturación para un polígono.
+   * Devuelve una presión normalizada 0.0–1.0.
    */
   public calcularSaturacionZonal(
     polygonId: string,
     contexto: ContextoCivilizatorio,
     activosEnZona: number = 0,
   ): SaturationResult {
-    const densidadFisica = activosEnZona / 1000;
+    const {
+      maxActivosPorZona,
+      maxTuristas,
+      climaMultipliers,
+      eventoBonus,
+      maxTensorConcurrencia,
+      umbralAlerta,
+      enableWarnings,
+    } = this.config;
 
-    const multiplicadorClima =
-      contexto.clima === 'niebla_densa' ? 1.4
-        : contexto.clima === 'lluvia' ? 1.2
-          : 1.0;
+    const activosClamped = this.clamp(
+      Number.isFinite(activosEnZona) ? activosEnZona : 0,
+      0,
+      maxActivosPorZona,
+    );
 
-    const tensorEventos = contexto.eventos_activos.length > 0 ? 0.15 : 0;
-    const tensorConcurrencia = Math.min(0.25, contexto.turistas_concurrentes / 10000);
+    const turistasClamped = this.clamp(
+      Number.isFinite(contexto.turistas_concurrentes)
+        ? contexto.turistas_concurrentes
+        : 0,
+      0,
+      maxTuristas,
+    );
+
+    const clima: Clima =
+      contexto.clima === "lluvia" || contexto.clima === "niebla_densa"
+        ? contexto.clima
+        : "despejado";
+
+    const densidadFisica = activosClamped / maxActivosPorZona;
+
+    const multiplicadorClima = climaMultipliers[clima] ?? 1.0;
+
+    const tensorEventos =
+      Array.isArray(contexto.eventos_activos) &&
+      contexto.eventos_activos.length > 0
+        ? eventoBonus
+        : 0;
+
+    const tensorConcurrencia = this.clamp(
+      turistasClamped / maxTuristas,
+      0,
+      maxTensorConcurrencia,
+    );
 
     const cargaBase = densidadFisica * multiplicadorClima;
     const cargaFinal = cargaBase + tensorEventos + tensorConcurrencia;
-    const presion = Math.min(1.0, Math.max(0.0, cargaFinal));
 
-    const alerta = presion > 0.85;
+    const presion = this.clamp(cargaFinal, 0, 1);
 
-    if (alerta) {
+    const alerta = presion > umbralAlerta;
+
+    if (alerta && enableWarnings) {
+      // En producción puedes enchufar aquí un logger externo.
+      // eslint-disable-next-line no-console
       console.warn(
-        `[CHRONUS] ALERTA: Saturación crítica (${(presion * 100).toFixed(1)}%) en Zona ${polygonId}`,
+        `[CHRONUS] ALERTA: Saturación crítica (${(presion * 100).toFixed(
+          1,
+        )}%) en Zona ${polygonId}`,
       );
     }
 
@@ -63,14 +139,29 @@ export class ChronusEngine {
   }
 
   /**
-   * Calculate saturation for multiple zones at once
+   * Calcula saturación para múltiples zonas en un solo paso.
    */
   public calcularSaturacionMultiple(
     zonas: Array<{ id: string; activos: number }>,
     contexto: ContextoCivilizatorio,
   ): SaturationResult[] {
-    return zonas.map(z => this.calcularSaturacionZonal(z.id, contexto, z.activos));
+    if (!Array.isArray(zonas) || zonas.length === 0) return [];
+    return zonas.map((z) =>
+      this.calcularSaturacionZonal(z.id, contexto, z.activos),
+    );
+  }
+
+  /**
+   * Exponer config efectiva (útil para debug/control panel).
+   */
+  public getConfig(): ChronusConfig {
+    return this.config;
   }
 }
 
+/**
+ * Instancia compartida del motor, con configuración por defecto.
+ * Si en algún punto quieres distintas políticas (ej. entorno de pruebas),
+ * puedes crear nuevas instancias con new ChronusEngine({ ... }).
+ */
 export const chronusEngine = new ChronusEngine();

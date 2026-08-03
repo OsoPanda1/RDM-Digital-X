@@ -1,0 +1,531 @@
+/* ============================================================================
+   RDM Digital · Capa Visual Soberana
+   ----------------------------------------------------------------------------
+   Adopta el lenguaje del repo rdm-digital-hub-ldtocs (editorial, neblina serrana,
+   plata minera, dorados discretos) y lo eleva a un registro más sofisticado:
+   hairlines de precisión, oro laminado, vidrio de dos capas, revelados en scroll.
+
+   Regla: todo se apoya en tokens semánticos (--gold, --electric, --platinum...).
+   Nada de colores crudos fuera de las mezclas atmosféricas.
+   ============================================================================ */
+
+/* --- utilidades RDM (capa posterior a Tailwind, cargada desde main.tsx) --- */
+  /* ------------------------------------------------------------------
+     1 · SUPERFICIES · vidrio de dos capas con luz de canto
+     ------------------------------------------------------------------ */
+
+  .glass-surface {
+    position: relative;
+    border-radius: 1rem;
+    background:
+      linear-gradient(
+        158deg,
+        hsla(220, 26%, 15%, 0.72) 0%,
+        hsla(220, 24%, 10%, 0.58) 46%,
+        hsla(220, 28%, 7%, 0.72) 100%
+      );
+    border: 1px solid hsla(210, 60%, 70%, 0.09);
+    backdrop-filter: blur(22px) saturate(150%);
+    -webkit-backdrop-filter: blur(22px) saturate(150%);
+    box-shadow:
+      0 1px 0 0 hsla(0, 0%, 100%, 0.05) inset,
+      0 22px 60px -32px hsla(0, 0%, 0%, 0.85);
+    transition:
+      border-color 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  /* Filo superior iluminado: da la sensación de canto pulido. */
+  .glass-surface::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 12%;
+    right: 12%;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      hsla(43, 90%, 72%, 0.4),
+      hsla(210, 100%, 75%, 0.28),
+      transparent
+    );
+    opacity: 0.7;
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  .glass-surface:hover {
+    border-color: hsla(43, 80%, 62%, 0.24);
+    box-shadow:
+      0 1px 0 0 hsla(0, 0%, 100%, 0.07) inset,
+      0 30px 80px -34px hsla(0, 0%, 0%, 0.9);
+  }
+
+  .glass-panel {
+    border-radius: 1.25rem;
+    background: linear-gradient(
+      158deg,
+      hsla(220, 26%, 13%, 0.66),
+      hsla(220, 30%, 7%, 0.78)
+    );
+    border: 1px solid hsla(210, 50%, 70%, 0.07);
+    backdrop-filter: blur(28px) saturate(160%);
+    -webkit-backdrop-filter: blur(28px) saturate(160%);
+    box-shadow: 0 40px 110px -60px hsla(0, 0%, 0%, 0.95);
+  }
+
+  /* ------------------------------------------------------------------
+     2 · AURAS · halos direccionales, nunca neón plano
+     ------------------------------------------------------------------ */
+
+  .glow-gold {
+    box-shadow:
+      0 0 0 1px hsla(43, 80%, 60%, 0.1),
+      0 26px 70px -40px hsla(43, 85%, 58%, 0.5);
+    transition: box-shadow 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .glow-gold:hover {
+    box-shadow:
+      0 0 0 1px hsla(43, 85%, 65%, 0.28),
+      0 34px 90px -38px hsla(43, 88%, 60%, 0.62);
+  }
+
+  .glow-cyan {
+    box-shadow:
+      0 0 0 1px hsla(205, 90%, 65%, 0.1),
+      0 26px 70px -40px hsla(205, 100%, 60%, 0.48);
+    transition: box-shadow 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .glow-cyan:hover {
+    box-shadow:
+      0 0 0 1px hsla(205, 95%, 70%, 0.28),
+      0 34px 90px -38px hsla(205, 100%, 62%, 0.6);
+  }
+
+  .glow-silver {
+    box-shadow:
+      0 0 0 1px hsla(210, 22%, 78%, 0.12),
+      0 26px 70px -42px hsla(210, 30%, 80%, 0.35);
+  }
+
+  /* ------------------------------------------------------------------
+     3 · TIPOGRAFÍA · oro laminado, plata fría, neblina
+     ------------------------------------------------------------------ */
+
+  .text-gradient-cyan {
+    background: linear-gradient(
+      104deg,
+      hsl(200, 95%, 78%) 0%,
+      hsl(var(--electric)) 42%,
+      hsl(212, 70%, 52%) 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+
+  .text-gradient-silver {
+    background: linear-gradient(
+      104deg,
+      hsl(210, 24%, 92%) 0%,
+      hsl(var(--platinum)) 48%,
+      hsl(215, 16%, 58%) 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+
+  /* Oro laminado: tres paradas de luz, como metal pulido a mano. */
+  .text-foil-gold {
+    background: linear-gradient(
+      104deg,
+      hsl(40, 62%, 52%) 0%,
+      hsl(46, 92%, 78%) 26%,
+      hsl(38, 76%, 56%) 48%,
+      hsl(45, 88%, 74%) 68%,
+      hsl(32, 62%, 46%) 100%
+    );
+    background-size: 220% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+
+  .text-foil-gold--live {
+    animation: rdmFoilSweep 9s ease-in-out infinite;
+  }
+
+  @keyframes rdmFoilSweep {
+    0%,
+    100% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+  }
+
+  /* Antetítulo editorial con filete: sustituye a los kickers sueltos. */
+  .kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-family: "Montserrat", system-ui, sans-serif;
+    font-size: 0.625rem;
+    font-weight: 500;
+    letter-spacing: 0.42em;
+    text-transform: uppercase;
+    color: hsl(var(--gold) / 0.72);
+  }
+
+  .kicker::before {
+    content: "";
+    width: 2.25rem;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, hsl(var(--gold) / 0.65));
+  }
+
+  .kicker--center::after {
+    content: "";
+    width: 2.25rem;
+    height: 1px;
+    background: linear-gradient(270deg, transparent, hsl(var(--gold) / 0.65));
+  }
+
+  /* Capitular editorial para textos largos. */
+  .drop-cap::first-letter {
+    float: left;
+    font-family: "Cormorant Garamond", Georgia, serif;
+    font-size: 3.6em;
+    line-height: 0.78;
+    padding: 0.08em 0.14em 0 0;
+    color: hsl(var(--gold) / 0.85);
+  }
+
+  /* ------------------------------------------------------------------
+     4 · FILETES · separadores de precisión
+     ------------------------------------------------------------------ */
+
+  .hairline {
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      hsl(var(--gold) / 0.28) 28%,
+      hsl(var(--electric) / 0.2) 62%,
+      transparent
+    );
+  }
+
+  .hairline-glow {
+    position: relative;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      hsl(var(--gold) / 0.55) 22%,
+      hsl(var(--electric) / 0.45) 50%,
+      hsl(var(--gold) / 0.55) 78%,
+      transparent 100%
+    );
+  }
+  .hairline-glow::after {
+    content: "";
+    position: absolute;
+    inset: -5px 18% -5px 18%;
+    background: inherit;
+    filter: blur(9px);
+    opacity: 0.45;
+    pointer-events: none;
+  }
+
+  /* ------------------------------------------------------------------
+     5 · REVELADO EN SCROLL · adoptado del hub, con curva más lenta
+     ------------------------------------------------------------------ */
+
+  .reveal,
+  .reveal-left,
+  .reveal-right,
+  .reveal-scale {
+    opacity: 0;
+    transition:
+      opacity 0.95s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.95s cubic-bezier(0.22, 1, 0.36, 1),
+      filter 0.95s ease;
+    filter: blur(6px);
+    will-change: opacity, transform;
+  }
+
+  .reveal {
+    transform: translateY(34px);
+  }
+  .reveal-left {
+    transform: translateX(-44px);
+  }
+  .reveal-right {
+    transform: translateX(44px);
+  }
+  .reveal-scale {
+    transform: scale(0.94);
+  }
+
+  .is-revealed {
+    opacity: 1;
+    transform: none;
+    filter: blur(0);
+  }
+
+  /* Escalonado por hijos, hasta 10 elementos. */
+  .stagger > * {
+    opacity: 0;
+    transform: translateY(22px);
+    transition:
+      opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .stagger.is-revealed > * {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .stagger.is-revealed > *:nth-child(1) { transition-delay: 0.02s; }
+  .stagger.is-revealed > *:nth-child(2) { transition-delay: 0.09s; }
+  .stagger.is-revealed > *:nth-child(3) { transition-delay: 0.16s; }
+  .stagger.is-revealed > *:nth-child(4) { transition-delay: 0.23s; }
+  .stagger.is-revealed > *:nth-child(5) { transition-delay: 0.3s; }
+  .stagger.is-revealed > *:nth-child(6) { transition-delay: 0.37s; }
+  .stagger.is-revealed > *:nth-child(7) { transition-delay: 0.44s; }
+  .stagger.is-revealed > *:nth-child(8) { transition-delay: 0.51s; }
+  .stagger.is-revealed > *:nth-child(9) { transition-delay: 0.58s; }
+  .stagger.is-revealed > *:nth-child(10) { transition-delay: 0.65s; }
+
+  /* ------------------------------------------------------------------
+     6 · INTERACCIÓN · levantamiento, imán, destello
+     ------------------------------------------------------------------ */
+
+  .card-lift {
+    transition:
+      transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 0.5s ease;
+  }
+  .card-lift:hover {
+    transform: translateY(-7px);
+  }
+
+  .magnetic {
+    transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .magnetic:hover {
+    transform: translateY(-2px) scale(1.02);
+  }
+  .magnetic:active {
+    transform: translateY(0) scale(0.985);
+  }
+
+  .btn-shimmer {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .btn-shimmer::before {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 -120%;
+    width: 60%;
+    background: linear-gradient(
+      100deg,
+      transparent,
+      hsla(0, 0%, 100%, 0.22),
+      transparent
+    );
+    transform: skewX(-18deg);
+    transition: left 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+    pointer-events: none;
+  }
+  .btn-shimmer:hover::before {
+    left: 130%;
+  }
+
+  /* Imagen editorial: zoom lento + velo inferior al pasar el cursor. */
+  .img-frame {
+    position: relative;
+    overflow: hidden;
+  }
+  .img-frame img {
+    transition:
+      transform 1.1s cubic-bezier(0.22, 1, 0.36, 1),
+      filter 0.7s ease;
+  }
+  .img-frame:hover img {
+    transform: scale(1.07);
+    filter: saturate(1.08) contrast(1.03);
+  }
+  .img-frame::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to top,
+      hsla(220, 35%, 4%, 0.72) 0%,
+      hsla(220, 35%, 4%, 0.1) 46%,
+      transparent 100%
+    );
+    pointer-events: none;
+  }
+
+  .pulse-ring {
+    position: relative;
+  }
+  .pulse-ring::before {
+    content: "";
+    position: absolute;
+    inset: -5px;
+    border-radius: inherit;
+    border: 1px solid hsl(var(--gold) / 0.32);
+    animation: rdmPulseRing 2.6s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+    pointer-events: none;
+  }
+  @keyframes rdmPulseRing {
+    0% {
+      opacity: 0.9;
+      transform: scale(1);
+    }
+    100% {
+      opacity: 0;
+      transform: scale(1.16);
+    }
+  }
+
+  /* Borde con gradiente animado, sin pintar el fondo. */
+  .foil-border {
+    position: relative;
+  }
+  .foil-border::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(
+      135deg,
+      hsl(var(--gold) / 0.7),
+      hsl(var(--electric) / 0.45),
+      hsl(var(--gold) / 0.7)
+    );
+    background-size: 220% 220%;
+    animation: rdmFoilSweep 7s ease infinite;
+    -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  /* ------------------------------------------------------------------
+     7 · TEXTURA · grano de papel serrano sobre superficies oscuras
+     ------------------------------------------------------------------ */
+
+  .grain::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: 0.42;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.055'/%3E%3C/svg%3E");
+  }
+
+  /* ------------------------------------------------------------------
+     8 · COMPOSICIÓN · mosaico editorial y galería con anclaje
+     ------------------------------------------------------------------ */
+
+  .mosaic {
+    display: grid;
+    gap: 0.75rem;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-auto-rows: 190px;
+  }
+  .mosaic-tall {
+    grid-row: span 2;
+  }
+  .mosaic-wide {
+    grid-column: span 2;
+  }
+  @media (max-width: 1024px) {
+    .mosaic {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-auto-rows: 165px;
+    }
+  }
+  @media (max-width: 640px) {
+    .mosaic {
+      grid-template-columns: minmax(0, 1fr);
+      grid-auto-rows: 200px;
+    }
+    .mosaic-wide,
+    .mosaic-tall {
+      grid-column: span 1;
+      grid-row: span 1;
+    }
+  }
+
+  .rail {
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 0.75rem;
+  }
+  .rail::-webkit-scrollbar {
+    display: none;
+  }
+  .rail > * {
+    scroll-snap-align: start;
+    flex-shrink: 0;
+  }
+
+  /* Numeral editorial para índices de sección (01, 02, 03…). */
+  .numeral {
+    font-family: "Cormorant Garamond", Georgia, serif;
+    font-size: 3.25rem;
+    line-height: 1;
+    font-weight: 300;
+    letter-spacing: -0.04em;
+    color: hsl(var(--gold) / 0.2);
+    font-variant-numeric: lining-nums tabular-nums;
+  }
+/* ------------------------------------------------------------------
+   9 · ACCESIBILIDAD · el movimiento nunca es obligatorio
+   ------------------------------------------------------------------ */
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .reveal-left,
+  .reveal-right,
+  .reveal-scale,
+  .stagger > * {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    transition: none !important;
+  }
+  .text-foil-gold--live,
+  .foil-border::before,
+  .pulse-ring::before {
+    animation: none !important;
+  }
+  .img-frame img,
+  .card-lift,
+  .magnetic {
+    transition: none !important;
+  }
+}

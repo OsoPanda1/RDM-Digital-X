@@ -35,6 +35,7 @@ const places = new Map<string, RegisteredPlace>();
 const telemetryByUser = new Map<string, TelemetryEvent[]>();
 const telemetryListeners = new Set<(event: TelemetryEvent) => void>();
 
+// WGS84: lat [-90,90], lng [-180,180]
 const WGS84_LIMITS = {
   latMin: -90,
   latMax: 90,
@@ -83,7 +84,9 @@ const validateCoordinates = (lat: number, lng: number) => {
 };
 
 const levenshtein = (a: string, b: string) => {
-  const matrix = Array.from({ length: b.length + 1 }, () => Array<number>(a.length + 1).fill(0));
+  const matrix = Array.from({ length: b.length + 1 }, () =>
+    Array<number>(a.length + 1).fill(0),
+  );
 
   for (let i = 0; i <= b.length; i += 1) matrix[i][0] = i;
   for (let j = 0; j <= a.length; j += 1) matrix[0][j] = j;
@@ -113,8 +116,12 @@ export const geolocationService = {
     validateCoordinates(input.lat, input.lng);
 
     const normalizedName = sanitizeText(input.name);
+
     const duplicateCandidate = Array.from(places.values()).find((record) => {
-      const distance = haversineMeters(record, input);
+      const distance = haversineMeters(
+        { lat: record.lat, lng: record.lng },
+        { lat: input.lat, lng: input.lng },
+      );
       const textScore = similarity(record.normalizedName, normalizedName);
       return distance <= 50 && textScore >= 0.75;
     });
@@ -128,7 +135,11 @@ export const geolocationService = {
       duplicateCandidate,
     });
 
-    const id = crypto.randomUUID();
+    const id =
+      typeof crypto.randomUUID === "function"
+        ? crypto.randomUUID()
+        : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+
     const record: RegisteredPlace = {
       id,
       ...input,
@@ -139,6 +150,7 @@ export const geolocationService = {
     };
 
     places.set(id, record);
+
     emitMsrEvent({
       layer: "L5",
       category: "geolocation.place.registered",
@@ -147,13 +159,18 @@ export const geolocationService = {
         placeId: id,
         confidence: verification.confidence,
         hasDuplicate: Boolean(duplicateCandidate),
+        lat: input.lat,
+        lng: input.lng,
+        source: input.source ?? "gps",
       },
     });
+
     appendBookpiNarrative({
       title: "Registro de lugar geolocalizado",
       narrative: `Se registró ${input.name} (${input.lat}, ${input.lng}) con confianza ${verification.confidence}.`,
       tags: ["geolocation", "place", verification.result ? "verified" : "review"],
     });
+
     publishXrGatewayEvent({
       topic: "telemetry",
       payload: {
@@ -164,19 +181,28 @@ export const geolocationService = {
         confidence: verification.confidence,
       },
     });
+
     return record;
   },
 
   listPlaces() {
-    return Array.from(places.values()).sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+    return Array.from(places.values()).sort((a, b) =>
+      b.createdAt.localeCompare(a.createdAt),
+    );
   },
 
   addTelemetry(event: TelemetryEvent) {
     validateCoordinates(event.lat, event.lng);
+
     const current = telemetryByUser.get(event.userId) ?? [];
-    const normalized = {
+    const timestamp =
+      event.timestamp && !Number.isNaN(Date.parse(event.timestamp))
+        ? new Date(event.timestamp).toISOString()
+        : new Date().toISOString();
+
+    const normalized: TelemetryEvent = {
       ...event,
-      timestamp: new Date(event.timestamp).toISOString(),
+      timestamp,
     };
 
     current.push(normalized);
@@ -186,6 +212,7 @@ export const geolocationService = {
 
     telemetryByUser.set(event.userId, current);
     telemetryListeners.forEach((listener) => listener(normalized));
+
     publishXrGatewayEvent({
       topic: "telemetry",
       payload: {
@@ -194,14 +221,17 @@ export const geolocationService = {
         lat: normalized.lat,
         lng: normalized.lng,
         source: normalized.source ?? "gps",
+        timestamp: normalized.timestamp,
       },
     });
+
     return normalized;
   },
 
   getRecentTelemetry(userId: string, limit = 50) {
     const entries = telemetryByUser.get(userId) ?? [];
-    return entries.slice(-Math.max(1, Math.min(limit, 500)));
+    const safeLimit = Math.max(1, Math.min(limit, 500));
+    return entries.slice(-safeLimit);
   },
 
   verifyLocation(input: {
@@ -216,9 +246,13 @@ export const geolocationService = {
     const categoryScore = Math.min(1, sanitizeText(input.category).length / 12);
     const addressScore = Math.min(1, sanitizeText(input.address).length / 35);
     const duplicatePenalty = input.duplicateCandidate ? 0.25 : 0;
+
+    const rawConfidence =
+      nameScore * 0.4 + categoryScore * 0.2 + addressScore * 0.4 - duplicatePenalty;
+
     const confidence = Math.max(
       0,
-      Math.min(1, Number((nameScore * 0.4 + categoryScore * 0.2 + addressScore * 0.4 - duplicatePenalty).toFixed(3))),
+      Math.min(1, Number(rawConfidence.toFixed(3))),
     );
 
     return {
