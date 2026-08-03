@@ -8,6 +8,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { AnimatePresence } from "framer-motion";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import CinematicIntro from "@/components/CinematicIntro";
+import { ThemeProvider } from "@/hooks/useTheme";
 
 // Música global
 import { MusicProvider } from "./music/MusicProvider";
@@ -51,6 +52,9 @@ const NotFound = lazy(() => import("./pages/NotFound"));
 
 // Nueva página de Archivo Sonoro
 const ArchivoSonoro = lazy(() => import("./pages/ArchivoSonoro"));
+
+// Guía de estilo del sistema de diseño
+const StyleGuide = lazy(() => import("./pages/StyleGuide"));
 
 const queryClient = new QueryClient();
 
@@ -113,6 +117,7 @@ const AnimatedRoutes = () => {
 
           {/* Nueva ruta institucional para el Archivo Sonoro */}
           <Route path="/archivo-sonoro" element={<ArchivoSonoro />} />
+          <Route path="/style-guide" element={<StyleGuide />} />
 
           <Route path="*" element={<NotFound />} />
         </Routes>
@@ -139,19 +144,21 @@ const AppInner = () => {
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <ErrorBoundary>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <MusicProvider>
-            <AppInner />
-            {/* Reproductor global siempre visible, estilo Spotify */}
-            <FloatingPlayer />
-          </MusicProvider>
-        </BrowserRouter>
-      </ErrorBoundary>
-    </TooltipProvider>
+    <ThemeProvider>
+      <TooltipProvider>
+        <ErrorBoundary>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <MusicProvider>
+              <AppInner />
+              {/* Reproductor global siempre visible, estilo Spotify */}
+              <FloatingPlayer />
+            </MusicProvider>
+          </BrowserRouter>
+        </ErrorBoundary>
+      </TooltipProvider>
+    </ThemeProvider>
   </QueryClientProvider>
 );
 

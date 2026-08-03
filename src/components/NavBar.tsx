@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link, useLocation } from "react-router-dom";
 import { Heart, ChevronDown, User, ShieldCheck } from "lucide-react";
+import ThemeToggle from "@/components/ThemeToggle";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserRole } from "@/hooks/useUserRole";
 import rdmLogo from "@/assets/rdm-digital-nexus-logo.png";
@@ -59,6 +60,7 @@ const PLANOS: Plano[] = [
       { label: "System Tenochtitlán", path: "/tenochtitlan", preview: "Kernel" },
       { label: "Operativo", path: "/operativo", preview: "Backend" },
       { label: "Evolución", path: "/evolucion", preview: "Roadmap" },
+      { label: "Guía de Estilo", path: "/style-guide", preview: "Design System" },
       { label: "Quiénes Somos", path: "/quienes-somos", preview: "Equipo" },
     ],
   },
@@ -194,14 +196,22 @@ const NavBar = () => {
                 <Heart className="h-3.5 w-3.5" />
                 Apoya
               </Link>
+              <div className="ml-1">
+                <ThemeToggle />
+              </div>
             </nav>
 
-            <button
-              onClick={() => setMenuOpen((v) => !v)}
-              className="xl:hidden rounded-xl border border-cyan-100/20 bg-black/30 px-3 py-2 text-[11px] tracking-[0.18em] uppercase text-cyan-100/80"
-            >
-              {menuOpen ? "Cerrar" : "Menú"}
-            </button>
+            <div className="flex items-center gap-2 xl:hidden">
+              <ThemeToggle />
+              <button
+                onClick={() => setMenuOpen((v) => !v)}
+                aria-expanded={menuOpen}
+                aria-label={menuOpen ? "Cerrar menú" : "Abrir menú"}
+                className="rounded-xl border border-cyan-100/20 bg-black/30 px-3 py-2 text-[11px] tracking-[0.18em] uppercase text-cyan-100/80"
+              >
+                {menuOpen ? "Cerrar" : "Menú"}
+              </button>
+            </div>
           </div>
         </div>
       </motion.header>
