@@ -8,6 +8,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { AnimatePresence } from "framer-motion";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import CinematicIntro from "@/components/CinematicIntro";
+import { ThemeProvider } from "@/hooks/useTheme";
 
 // Música global
 import { MusicProvider } from "./music/MusicProvider";
