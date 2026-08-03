@@ -6,7 +6,8 @@
    componentes.
    ================================================================== */
 
-@layer base {
+/* base */
+:root-wrapper-open
   :root {
     /* ---- Escala tipográfica (modular 1.22, base 16px) ---- */
     --font-display-family: "Cormorant Garamond", Georgia, serif;
