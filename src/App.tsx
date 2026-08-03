@@ -52,6 +52,9 @@ const NotFound = lazy(() => import("./pages/NotFound"));
 // Nueva página de Archivo Sonoro
 const ArchivoSonoro = lazy(() => import("./pages/ArchivoSonoro"));
 
+// Guía de estilo del sistema de diseño
+const StyleGuide = lazy(() => import("./pages/StyleGuide"));
+
 const queryClient = new QueryClient();
 
 const LoadingFallback = () => (
