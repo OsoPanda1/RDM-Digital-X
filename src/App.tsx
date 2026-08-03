@@ -116,6 +116,7 @@ const AnimatedRoutes = () => {
 
           {/* Nueva ruta institucional para el Archivo Sonoro */}
           <Route path="/archivo-sonoro" element={<ArchivoSonoro />} />
+          <Route path="/style-guide" element={<StyleGuide />} />
 
           <Route path="*" element={<NotFound />} />
         </Routes>
